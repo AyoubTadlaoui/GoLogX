@@ -5,6 +5,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 ## [Unreleased]
 
+## [0.1.7] — 2026-05-18
+
+### Added
+
+- **AUR `logx-bin` is live.** Maintainer setup completed: AUR account
+  `AyoubTadlaoui` registered, ed25519 SSH key registered on aurweb,
+  matching private key stored as the `AUR_KEY` repo secret on GoLogX.
+  `ssh aur@aur.archlinux.org help` now succeeds end-to-end.
+  This release is the first to actually exercise the goreleaser `aurs:`
+  pipe — it pushes a fresh PKGBUILD to `ssh://aur@aur.archlinux.org/logx-bin.git`.
+  Arch users can install with:
+
+  ```bash
+  yay -S logx-bin     # or: paru -S logx-bin
+  ```
+
+  The single-source-of-truth captcha solver I wrote during setup
+  (`pacman -V | sed -r 's#[0-9]+#331#g' | md5sum | cut -c1-6`) is
+  preserved in DISTRIBUTION.md for future AUR account creators.
+
 ## [0.1.6] — 2026-05-18
 
 ### Added — two more install channels (every roadmap channel now wired)
@@ -195,7 +215,8 @@ First public release.
 - **Distribution** — goreleaser config; tagged releases publish prebuilt binaries for linux/darwin/windows × amd64/arm64.
 - **Docs** — top-level README with quickstart, runnable `examples/basic`, godoc examples, CONTRIBUTING.
 
-[Unreleased]: https://github.com/AyoubTadlaoui/GoLogX/compare/v0.1.6...HEAD
+[Unreleased]: https://github.com/AyoubTadlaoui/GoLogX/compare/v0.1.7...HEAD
+[0.1.7]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.7
 [0.1.6]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.6
 [0.1.5]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.5
 [0.1.4]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.4
