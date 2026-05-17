@@ -5,6 +5,30 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 ## [Unreleased]
 
+## [0.1.3] — 2026-05-17
+
+First release with **end-to-end automated tap updates**: the
+`HOMEBREW_TAP_GITHUB_TOKEN` secret is now configured on the GoLogX repo, so
+goreleaser pushes a fresh `Formula/logx.rb` to
+[`AyoubTadlaoui/homebrew-tap`](https://github.com/AyoubTadlaoui/homebrew-tap)
+on every tag. `brew upgrade AyoubTadlaoui/tap/logx` now picks up every release
+without any maintainer touch.
+
+### Fixed
+
+- **Docs**: docker tags drop the leading `v` (e.g. `ghcr.io/ayoubtadlaoui/logx:0.1.3`,
+  not `:v0.1.3`) per common Docker convention. The published image format was
+  always correct; only the README / DISTRIBUTION.md / CHANGELOG examples had
+  drifted.
+
+### Changed
+
+- **DISTRIBUTION.md**: GHCR visibility flip is now documented as done
+  (`ghcr.io/ayoubtadlaoui/logx` is public, anonymous `docker pull` verified
+  end-to-end). Homebrew tap PAT instructions tightened to a pre-filled URL
+  plus a one-paste `gh secret set` flow with `read -rs` to keep the token off
+  the screen and out of shell history.
+
 ## [0.1.2] — 2026-05-17
 
 ### Added
@@ -71,7 +95,8 @@ First public release.
 - **Distribution** — goreleaser config; tagged releases publish prebuilt binaries for linux/darwin/windows × amd64/arm64.
 - **Docs** — top-level README with quickstart, runnable `examples/basic`, godoc examples, CONTRIBUTING.
 
-[Unreleased]: https://github.com/AyoubTadlaoui/GoLogX/compare/v0.1.2...HEAD
+[Unreleased]: https://github.com/AyoubTadlaoui/GoLogX/compare/v0.1.3...HEAD
+[0.1.3]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.3
 [0.1.2]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.2
 [0.1.1]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.1
 [0.1.0]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.0
