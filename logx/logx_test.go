@@ -2,6 +2,7 @@ package logx
 
 import (
 	"bytes"
+	"context"
 	"log/slog"
 	"strings"
 	"testing"
@@ -63,7 +64,7 @@ func TestDev(t *testing.T) {
 	if log == nil {
 		t.Fatal("Dev returned nil")
 	}
-	if !log.Enabled(nil, slog.LevelDebug) {
+	if !log.Enabled(context.Background(), slog.LevelDebug) {
 		t.Fatal("Dev should be enabled at DEBUG by default")
 	}
 }
@@ -73,10 +74,10 @@ func TestDefault(t *testing.T) {
 	if log == nil {
 		t.Fatal("Default returned nil")
 	}
-	if log.Enabled(nil, slog.LevelDebug) {
+	if log.Enabled(context.Background(), slog.LevelDebug) {
 		t.Fatal("Default should NOT be enabled at DEBUG by default")
 	}
-	if !log.Enabled(nil, slog.LevelInfo) {
+	if !log.Enabled(context.Background(), slog.LevelInfo) {
 		t.Fatal("Default should be enabled at INFO")
 	}
 }
