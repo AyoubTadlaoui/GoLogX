@@ -37,32 +37,60 @@ The [`Release` workflow](.github/workflows/release.yml) takes over:
 
 ### Homebrew tap PAT
 
-The tap auto-update step needs cross-repo write access, which the default `GITHUB_TOKEN` doesn't have.
+The tap auto-update step needs cross-repo write access, which the default
+`GITHUB_TOKEN` doesn't have.
 
-1. **Create the PAT.**
-   - GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic) → **Generate new token (classic)**.
-   - Scope: **`repo`** (full control of private repositories — needed to push commits to the tap repo).
-   - Note: name it something like `goreleaser:homebrew-tap`. No expiration is acceptable for a tap-only token; rotate it if you suspect compromise.
-2. **Store it as a repo secret on GoLogX.**
+1. **Create the PAT.** Open this pre-filled link (sets the description and
+   `repo` scope for you):
+
+   https://github.com/settings/tokens/new?description=goreleaser%3Ahomebrew-tap&scopes=repo
+
+   - Pick an expiration (90 days is reasonable; rotate then).
+   - Click **Generate token** and copy it — GitHub will only show it once.
+
+2. **Store it as a repo secret on GoLogX** in one paste:
+
    ```bash
    gh secret set HOMEBREW_TAP_GITHUB_TOKEN \
      --repo AyoubTadlaoui/GoLogX \
-     --body "<paste PAT here>"
+     --body "PASTE_PAT_HERE"
    ```
-   (Or via the web UI: Settings → Secrets and variables → Actions → New repository secret.)
-3. **Verify** on the next tag — the release workflow's `goreleaser` step should report a commit pushed to `AyoubTadlaoui/homebrew-tap`.
 
-If the secret is missing, the rest of the release still publishes; only the formula-push step fails.
+   Or via the web UI:
+   Settings → Secrets and variables → Actions → New repository secret.
+
+3. **Verify** by checking the secret is present (the value is not retrievable
+   — `gh` only confirms it exists):
+
+   ```bash
+   gh secret list --repo AyoubTadlaoui/GoLogX | grep HOMEBREW_TAP_GITHUB_TOKEN
+   ```
+
+4. **First tag after this lands** — release workflow's `goreleaser` step
+   should push a `logx: bump formula to vX.Y.Z` commit to
+   `AyoubTadlaoui/homebrew-tap`.
+
+If the secret is missing, the rest of the release still publishes (GHCR
+image + GitHub Release binaries); only the formula-push step is skipped.
 
 ### GHCR image visibility
 
-The first time `ghcr.io/ayoubtadlaoui/logx` is pushed it lands as a **private** package by default. To make it pullable without authentication:
+The `ghcr.io/ayoubtadlaoui/logx` package is **public** (one-time flip done in v0.1.2).
+Anonymous `docker pull ghcr.io/ayoubtadlaoui/logx:<version>` works without
+`docker login`. Verified end-to-end against the v0.1.2 release manifest.
 
-1. Go to https://github.com/users/AyoubTadlaoui/packages/container/logx/settings
-2. Under "Danger Zone" → **Change package visibility** → **Public**.
-3. (Optional) Connect the package to the GoLogX repo so it shows up on the repo sidebar.
+If you ever recreate the package (e.g. after a delete), it will land private
+again. To re-flip:
 
-This only needs to be done once.
+```bash
+# via the API (requires `write:packages` scope on your gh token —
+# add it with: gh auth refresh -h github.com -s write:packages,read:packages)
+gh api -X PATCH /user/packages/container/logx -f visibility=public
+
+# or via the UI
+# https://github.com/users/AyoubTadlaoui/packages/container/logx/settings
+# → Danger Zone → Change package visibility → Public
+```
 
 ## Verifying a release
 
