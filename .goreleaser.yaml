@@ -73,7 +73,10 @@ brews:
       bin.install "logx"
     test: |
       assert_match version.to_s, shell_output("#{bin}/logx -version")
-    skip_upload: false
+    # Skip the tap push when the PAT is missing so the rest of the release
+    # (GHCR + GitHub Release) still publishes cleanly. Once the secret is set,
+    # future tags auto-push.
+    skip_upload: '{{ if isEnvSet "HOMEBREW_TAP_GITHUB_TOKEN" }}false{{ else }}true{{ end }}'
 
 # Docker / GHCR — one image per arch, joined into a multi-arch manifest.
 # Repo path must be lowercase for ghcr.io: ghcr.io/ayoubtadlaoui/logx.
