@@ -1,0 +1,87 @@
+# goreleaser config — https://goreleaser.com
+# Local test: `make snapshot` (or `goreleaser release --snapshot --clean`).
+# CI tag releases run via .github/workflows/release.yml on `v*` tags.
+
+version: 2
+
+project_name: GoLogX
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: logx
+    main: ./cmd/logx
+    binary: logx
+    env:
+      - CGO_ENABLED=0
+    goos: [linux, darwin, windows]
+    goarch: [amd64, arm64]
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w
+      - -X main.version={{.Version}}
+
+archives:
+  - id: default
+    builds: [logx]
+    name_template: >-
+      {{ .ProjectName }}_
+      {{- .Version }}_
+      {{- .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "arm64" }}arm64
+      {{- else }}{{ .Arch }}{{ end }}
+    format_overrides:
+      - goos: windows
+        format: zip
+    files:
+      - LICENSE
+      - README.md
+      - CHANGELOG.md
+
+checksum:
+  name_template: 'checksums.txt'
+
+snapshot:
+  version_template: '{{ incpatch .Version }}-next'
+
+changelog:
+  sort: asc
+  use: github
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+      - '^chore:'
+      - 'Merge pull request'
+      - 'Merge branch'
+
+release:
+  github:
+    owner: AyoubTadlaoui
+    name: GoLogX
+  draft: false
+  prerelease: auto
+  name_template: '{{ .Tag }}'
+  header: |
+    ## GoLogX {{ .Tag }}
+
+    A small, fast, zero-dependency toolkit on top of Go's standard `log/slog`,
+    plus the `logx` CLI for pretty-printing JSON logs from any pipeline.
+  footer: |
+    ---
+
+    **Install:**
+
+    ```bash
+    # Library
+    go get github.com/AyoubTadlaoui/GoLogX/logx@{{ .Tag }}
+
+    # CLI from source
+    go install github.com/AyoubTadlaoui/GoLogX/cmd/logx@{{ .Tag }}
+    ```
+
+    Or download a prebuilt binary below.
