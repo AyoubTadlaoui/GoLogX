@@ -129,6 +129,42 @@ scoops:
     commit_msg_template: 'logx: bump scoop manifest to {{ .Tag }}'
     skip_upload: '{{ if isEnvSet "HOMEBREW_TAP_GITHUB_TOKEN" }}false{{ else }}true{{ end }}'
 
+# AUR (Arch User Repository) — publishes the `logx-bin` binary package.
+# Goreleaser builds a PKGBUILD that downloads the prebuilt Linux tarball
+# from this release and installs the binary + docs into /usr/bin and
+# /usr/share/doc/logx/.
+#
+# Maintainer setup (one-time):
+#   1. Create an AUR account at https://aur.archlinux.org/register
+#   2. Generate an SSH keypair just for AUR:
+#        ssh-keygen -t ed25519 -C "aur" -f ~/.ssh/aur_ed25519
+#   3. Paste ~/.ssh/aur_ed25519.pub into your AUR profile's "SSH Public Key"
+#   4. Confirm: ssh aur@aur.archlinux.org help
+#   5. Store the private key as a GoLogX repo secret:
+#        gh secret set AUR_KEY --repo AyoubTadlaoui/GoLogX < ~/.ssh/aur_ed25519
+#
+# Until AUR_KEY is set, this pipe is skipped cleanly (release still ships
+# every other channel).
+aurs:
+  - name: logx-bin
+    homepage: https://github.com/AyoubTadlaoui/GoLogX
+    description: Pretty-print JSON slog logs from stdin, files, or follow mode
+    license: MIT
+    maintainers:
+      - 'Ayoub Tadlaoui <atlas.kaisar@icloud.com>'
+    private_key: '{{ .Env.AUR_KEY }}'
+    git_url: 'ssh://aur@aur.archlinux.org/logx-bin.git'
+    commit_author:
+      name: Ayoub Tadlaoui
+      email: atlas.kaisar@icloud.com
+    commit_msg_template: 'Update to {{ .Tag }}'
+    package: |-
+      install -Dm755 "./logx" "${pkgdir}/usr/bin/logx"
+      install -Dm644 "./LICENSE" "${pkgdir}/usr/share/licenses/logx/LICENSE"
+      install -Dm644 "./README.md" "${pkgdir}/usr/share/doc/logx/README.md"
+      install -Dm644 "./CHANGELOG.md" "${pkgdir}/usr/share/doc/logx/CHANGELOG.md"
+    skip_upload: '{{ if isEnvSet "AUR_KEY" }}false{{ else }}true{{ end }}'
+
 # WinGet — Microsoft's official Windows package manager.
 # On every tag, goreleaser:
 #   1. Generates the YAML manifest for AyoubTadlaoui.logx

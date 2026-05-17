@@ -47,7 +47,12 @@ jobs:
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # PAT with `repo` scope on the homebrew-tap repo.
-          # If unset, goreleaser fails the brew-push step but the GH Release
-          # and GHCR image are still published — see DISTRIBUTION.md.
+          # PAT with `repo` scope. Reused for: homebrew-tap auto-update,
+          # scoop-bucket auto-update, and the winget-pkgs fork+PR flow.
+          # If unset, those pipes are skipped cleanly — the rest of the
+          # release still ships. See DISTRIBUTION.md.
           HOMEBREW_TAP_GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_GITHUB_TOKEN }}
+          # SSH private key registered with the maintainer's AUR account
+          # (ssh aur@aur.archlinux.org). Drives the logx-bin AUR push.
+          # Unset → AUR pipe is skipped cleanly. See DISTRIBUTION.md.
+          AUR_KEY: ${{ secrets.AUR_KEY }}

@@ -16,8 +16,10 @@ How GoLogX is shipped, by audience.
 | **.rpm (RHEL/Fedora/SUSE)** | RPM-family Linux users | `sudo rpm -i logx-X.Y.Z-1.x86_64.rpm` (download from releases) | ✓ (goreleaser nfpms, attached to GH Release) |
 | **Universal install script** | Any Linux / macOS user, scriptable | `curl -fsSL https://raw.githubusercontent.com/AyoubTadlaoui/GoLogX/main/install.sh \| sh` | ✓ (script lives in repo, always pulls the latest GH Release) |
 | **GHCR Docker image** | Container / CI users | `docker run --rm -i ghcr.io/ayoubtadlaoui/logx:X.Y.Z < log.json` | ✓ (multi-arch via goreleaser + buildx, `GITHUB_TOKEN` is enough) |
+| **Arch AUR** | Arch Linux users | `yay -S logx-bin` (or `paru -S logx-bin`) | ✓ on each tag goreleaser SSHes to `aur@aur.archlinux.org` and pushes a fresh PKGBUILD to the `logx-bin` repo; requires the `AUR_KEY` repo secret (an SSH private key registered with the maintainer's AUR account) |
+| **Nix flake** | Nix / NixOS users | `nix run github:AyoubTadlaoui/GoLogX` | ✓ self-hosted at the repo root (`flake.nix`); consumed directly from GitHub — no separate registry. Bump the `version` string in `flake.nix` on each release (kept in sync with goreleaser's tag) |
 
-Roadmap channels not yet wired: Arch AUR, Nix flake, Snap.
+Roadmap channels not yet wired: Snap (cross-distro sandboxed), nixpkgs upstream (vs. just the flake), Chocolatey (Windows, paid).
 
 ## Tagging and releasing
 
@@ -77,6 +79,50 @@ The tap auto-update step needs cross-repo write access, which the default
 
 If the secret is missing, the rest of the release still publishes (GHCR
 image + GitHub Release binaries); only the formula-push step is skipped.
+
+### AUR SSH key (one-time, optional)
+
+The AUR (Arch User Repository) doesn't use HTTPS+token like GitHub — every push
+to `ssh://aur@aur.archlinux.org/<package>.git` is gated on SSH key auth tied
+to your AUR account.
+
+1. **Create an AUR account.** Free, no email confirmation needed:
+   https://aur.archlinux.org/register
+
+2. **Check the package name is available.** AUR is first-come-first-serve.
+   Search for the slug you'll publish:
+   https://aur.archlinux.org/packages?K=logx-bin&SB=n
+   (As of this writing, `logx-bin` is unclaimed.)
+
+3. **Generate a dedicated SSH keypair** so you can rotate or revoke without
+   touching your other keys:
+
+   ```bash
+   ssh-keygen -t ed25519 -C "aur" -f ~/.ssh/aur_ed25519
+   # No passphrase — goreleaser needs to use the key non-interactively.
+   ```
+
+4. **Register the public key.** Log into AUR, open your profile, and paste
+   the contents of `~/.ssh/aur_ed25519.pub` into the **SSH Public Key** field.
+
+5. **Verify SSH access:**
+
+   ```bash
+   ssh -i ~/.ssh/aur_ed25519 aur@aur.archlinux.org help
+   # Should print AUR's command list, not a permission error.
+   ```
+
+6. **Store the private key as a GoLogX repo secret** in one paste:
+
+   ```bash
+   gh secret set AUR_KEY --repo AyoubTadlaoui/GoLogX < ~/.ssh/aur_ed25519
+   ```
+
+7. **First tag after this lands** — goreleaser will SSH to the AUR git
+   server, push a fresh PKGBUILD, and end users can `yay -S logx-bin`.
+
+If `AUR_KEY` is missing, the AUR pipe is skipped cleanly (the rest of the
+release still ships).
 
 ### GHCR image visibility
 

@@ -5,6 +5,43 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 ## [Unreleased]
 
+## [0.1.6] — 2026-05-18
+
+### Added — two more install channels (every roadmap channel now wired)
+
+- **Nix flake** at the repo root (`flake.nix`), consumed directly from GitHub —
+  no separate registry needed. Built with `pkgs.buildGoModule`, no vendor tree
+  (GoLogX has zero external deps), version baked in via `-ldflags`.
+
+  ```bash
+  nix run github:AyoubTadlaoui/GoLogX             # one-shot
+  nix shell github:AyoubTadlaoui/GoLogX           # in PATH for one shell
+  nix profile install github:AyoubTadlaoui/GoLogX # persistent
+  nix develop github:AyoubTadlaoui/GoLogX         # dev shell with Go/gopls/golangci-lint/goreleaser
+  ```
+
+- **Arch AUR** publishing of the `logx-bin` binary package via goreleaser's
+  `aurs:` pipe. On every tag, goreleaser SSHes to `aur@aur.archlinux.org` and
+  pushes a fresh PKGBUILD that grabs the prebuilt Linux tarball from this
+  release.
+
+  ```bash
+  yay -S logx-bin      # or: paru -S logx-bin
+  ```
+
+  **Maintainer setup required** (one-time): AUR account + SSH key + `AUR_KEY`
+  repo secret. Until that's done, this pipe is skipped cleanly (rest of the
+  release still ships). Step-by-step instructions in
+  [`DISTRIBUTION.md`](DISTRIBUTION.md).
+
+### Changed
+
+- README install snippet now lists 11 install channels (Homebrew, Scoop, WinGet,
+  AUR, Nix, install.sh, .deb, .rpm, Docker, `go install`, prebuilt binaries).
+- DISTRIBUTION.md install matrix grew from 9 to 11 channels. The "roadmap
+  channels not yet wired" line shrunk to Snap, nixpkgs upstream, Chocolatey —
+  every channel from the original distribution roadmap is now done.
+
 ## [0.1.5] — 2026-05-18
 
 ### Added — four new install channels
@@ -158,7 +195,8 @@ First public release.
 - **Distribution** — goreleaser config; tagged releases publish prebuilt binaries for linux/darwin/windows × amd64/arm64.
 - **Docs** — top-level README with quickstart, runnable `examples/basic`, godoc examples, CONTRIBUTING.
 
-[Unreleased]: https://github.com/AyoubTadlaoui/GoLogX/compare/v0.1.5...HEAD
+[Unreleased]: https://github.com/AyoubTadlaoui/GoLogX/compare/v0.1.6...HEAD
+[0.1.6]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.6
 [0.1.5]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.5
 [0.1.4]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.4
 [0.1.3]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.3

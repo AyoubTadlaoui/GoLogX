@@ -47,14 +47,21 @@ scoop install logx
 # WinGet (Windows, once Microsoft accepts the submission)
 winget install AyoubTadlaoui.logx
 
+# Arch Linux (via AUR)
+yay -S logx-bin     # or: paru -S logx-bin
+
+# Nix / NixOS
+nix run github:AyoubTadlaoui/GoLogX            # one-shot
+nix profile install github:AyoubTadlaoui/GoLogX # persistent
+
 # Universal install script (Linux + macOS, amd64 + arm64) — verifies SHA256
 curl -fsSL https://raw.githubusercontent.com/AyoubTadlaoui/GoLogX/main/install.sh | sh
 
 # Debian / Ubuntu — pick the .deb from the releases page
-sudo dpkg -i logx_0.1.5_linux_amd64.deb
+sudo dpkg -i logx_0.1.6_linux_amd64.deb
 
 # RHEL / Fedora / SUSE — pick the .rpm from the releases page
-sudo rpm -i logx-0.1.5-1.x86_64.rpm
+sudo rpm -i logx-0.1.6-1.x86_64.rpm
 
 # Docker (linux/amd64, linux/arm64)
 docker run --rm -i ghcr.io/ayoubtadlaoui/logx:latest < app.json
