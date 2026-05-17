@@ -45,6 +45,84 @@ archives:
 checksum:
   name_template: 'checksums.txt'
 
+# Homebrew tap — formula auto-updated on every tag.
+#
+# Requires a Personal Access Token (PAT) with `repo` scope on the GoLogX repo's
+# secrets, exposed to the release workflow as HOMEBREW_TAP_GITHUB_TOKEN.
+# See DISTRIBUTION.md for the maintainer setup.
+#
+# When the secret is missing the release workflow still succeeds — only the
+# tap-push step fails — because we leave the GHCR + GH Release work upstream
+# of this step.
+brews:
+  - name: logx
+    repository:
+      owner: AyoubTadlaoui
+      name: homebrew-tap
+      branch: main
+      token: '{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}'
+    directory: Formula
+    homepage: https://github.com/AyoubTadlaoui/GoLogX
+    description: Pretty-print JSON slog logs from stdin, files, or follow mode
+    license: MIT
+    commit_author:
+      name: Ayoub Tadlaoui
+      email: atlas.kaisar@icloud.com
+    commit_msg_template: 'logx: bump formula to {{ .Tag }}'
+    install: |
+      bin.install "logx"
+    test: |
+      assert_match version.to_s, shell_output("#{bin}/logx -version")
+    skip_upload: false
+
+# Docker / GHCR — one image per arch, joined into a multi-arch manifest.
+# Repo path must be lowercase for ghcr.io: ghcr.io/ayoubtadlaoui/logx.
+dockers:
+  - id: logx-amd64
+    image_templates:
+      - 'ghcr.io/ayoubtadlaoui/logx:{{ .Version }}-amd64'
+    use: buildx
+    goos: linux
+    goarch: amd64
+    dockerfile: Dockerfile
+    build_flag_templates:
+      - '--pull'
+      - '--platform=linux/amd64'
+      - '--label=org.opencontainers.image.title={{ .ProjectName }}'
+      - '--label=org.opencontainers.image.description=Pretty-print JSON slog logs'
+      - '--label=org.opencontainers.image.url=https://github.com/AyoubTadlaoui/GoLogX'
+      - '--label=org.opencontainers.image.source=https://github.com/AyoubTadlaoui/GoLogX'
+      - '--label=org.opencontainers.image.version={{ .Version }}'
+      - '--label=org.opencontainers.image.revision={{ .FullCommit }}'
+      - '--label=org.opencontainers.image.licenses=MIT'
+  - id: logx-arm64
+    image_templates:
+      - 'ghcr.io/ayoubtadlaoui/logx:{{ .Version }}-arm64'
+    use: buildx
+    goos: linux
+    goarch: arm64
+    dockerfile: Dockerfile
+    build_flag_templates:
+      - '--pull'
+      - '--platform=linux/arm64'
+      - '--label=org.opencontainers.image.title={{ .ProjectName }}'
+      - '--label=org.opencontainers.image.description=Pretty-print JSON slog logs'
+      - '--label=org.opencontainers.image.url=https://github.com/AyoubTadlaoui/GoLogX'
+      - '--label=org.opencontainers.image.source=https://github.com/AyoubTadlaoui/GoLogX'
+      - '--label=org.opencontainers.image.version={{ .Version }}'
+      - '--label=org.opencontainers.image.revision={{ .FullCommit }}'
+      - '--label=org.opencontainers.image.licenses=MIT'
+
+docker_manifests:
+  - name_template: 'ghcr.io/ayoubtadlaoui/logx:{{ .Version }}'
+    image_templates:
+      - 'ghcr.io/ayoubtadlaoui/logx:{{ .Version }}-amd64'
+      - 'ghcr.io/ayoubtadlaoui/logx:{{ .Version }}-arm64'
+  - name_template: 'ghcr.io/ayoubtadlaoui/logx:latest'
+    image_templates:
+      - 'ghcr.io/ayoubtadlaoui/logx:{{ .Version }}-amd64'
+      - 'ghcr.io/ayoubtadlaoui/logx:{{ .Version }}-arm64'
+
 snapshot:
   version_template: '{{ incpatch .Version }}-next'
 
@@ -82,6 +160,12 @@ release:
 
     # CLI from source
     go install github.com/AyoubTadlaoui/GoLogX/cmd/logx@{{ .Tag }}
+
+    # CLI via Homebrew (macOS / Linux)
+    brew install AyoubTadlaoui/tap/logx
+
+    # CLI via Docker (linux/amd64, linux/arm64)
+    docker pull ghcr.io/ayoubtadlaoui/logx:{{ .Version }}
     ```
 
     Or download a prebuilt binary below.

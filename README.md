@@ -34,15 +34,23 @@ go get github.com/AyoubTadlaoui/GoLogX/logx@latest
 
 ### As a CLI
 
+Pick whichever fits your machine:
+
 ```bash
-# from source
+# Homebrew (macOS / Linux)
+brew install AyoubTadlaoui/tap/logx
+
+# Go install (any OS with Go ≥ 1.22)
 go install github.com/AyoubTadlaoui/GoLogX/cmd/logx@latest
 
-# or download a prebuilt binary from the releases page:
+# Docker (linux/amd64, linux/arm64)
+docker run --rm -i ghcr.io/ayoubtadlaoui/logx:latest < app.json
+
+# Prebuilt binary
 # https://github.com/AyoubTadlaoui/GoLogX/releases
 ```
 
-Requires Go ≥ 1.22.
+Library use requires Go ≥ 1.22. See [`DISTRIBUTION.md`](DISTRIBUTION.md) for the full channel matrix and maintainer notes.
 
 ---
 

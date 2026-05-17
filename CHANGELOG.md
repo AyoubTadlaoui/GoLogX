@@ -5,6 +5,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 ## [Unreleased]
 
+## [0.1.2] — 2026-05-17
+
+### Added
+
+- **Homebrew tap**: install with `brew install AyoubTadlaoui/tap/logx`. The
+  formula lives in [`AyoubTadlaoui/homebrew-tap`](https://github.com/AyoubTadlaoui/homebrew-tap)
+  and is auto-updated by goreleaser on every release (when the
+  `HOMEBREW_TAP_GITHUB_TOKEN` secret is configured — see DISTRIBUTION.md).
+- **Docker image on GHCR**: multi-arch (linux/amd64, linux/arm64) images
+  built from a minimal distroless base. Pull with
+  `docker pull ghcr.io/ayoubtadlaoui/logx:v0.1.2` (or `:latest`).
+- **`DISTRIBUTION.md`**: maintainer reference covering every install channel,
+  the tag-release flow, the one-time PAT setup for tap automation, and the
+  one-time visibility flip for the GHCR image.
+
+### Changed
+
+- README CLI install section restructured to lead with Homebrew + Docker,
+  with `go install` and prebuilt binaries as alternatives.
+
 ## [0.1.1] — 2026-05-17
 
 ### Fixed
@@ -49,6 +69,7 @@ First public release.
 - **Distribution** — goreleaser config; tagged releases publish prebuilt binaries for linux/darwin/windows × amd64/arm64.
 - **Docs** — top-level README with quickstart, runnable `examples/basic`, godoc examples, CONTRIBUTING.
 
-[Unreleased]: https://github.com/AyoubTadlaoui/GoLogX/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/AyoubTadlaoui/GoLogX/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.2
 [0.1.1]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.1
 [0.1.0]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.0
