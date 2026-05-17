@@ -8,11 +8,16 @@ How GoLogX is shipped, by audience.
 |---|---|---|---|
 | **Go module proxy / pkg.go.dev** | Library users | `go get github.com/AyoubTadlaoui/GoLogX/logx@vX.Y.Z` | ✓ (built into the Go ecosystem) |
 | **`go install`** | CLI users on any Go-friendly machine | `go install github.com/AyoubTadlaoui/GoLogX/cmd/logx@vX.Y.Z` | ✓ (built into the Go ecosystem) |
-| **Homebrew tap** | macOS + Linux CLI users | `brew install AyoubTadlaoui/tap/logx` | ✓ (goreleaser pushes to [`AyoubTadlaoui/homebrew-tap`](https://github.com/AyoubTadlaoui/homebrew-tap), **requires `HOMEBREW_TAP_GITHUB_TOKEN` secret**) |
+| **Homebrew tap** | macOS + Linux CLI users | `brew install AyoubTadlaoui/tap/logx` | ✓ (goreleaser pushes to [`AyoubTadlaoui/homebrew-tap`](https://github.com/AyoubTadlaoui/homebrew-tap), uses `HOMEBREW_TAP_GITHUB_TOKEN` PAT) |
+| **Scoop bucket** | Windows CLI users | `scoop bucket add atlas https://github.com/AyoubTadlaoui/scoop-bucket && scoop install logx` | ✓ (goreleaser pushes to [`AyoubTadlaoui/scoop-bucket`](https://github.com/AyoubTadlaoui/scoop-bucket), reuses the same PAT) |
+| **WinGet** | Windows CLI users | `winget install AyoubTadlaoui.logx` | ✓ on each tag goreleaser pushes to your fork [`AyoubTadlaoui/winget-pkgs`](https://github.com/AyoubTadlaoui/winget-pkgs) and opens a PR to [`microsoft/winget-pkgs`](https://github.com/microsoft/winget-pkgs); Microsoft reviews the first PR (1–3 days), later releases tend to auto-merge |
 | **GitHub Releases binaries** | All OSes, no Go required | Download from [releases](https://github.com/AyoubTadlaoui/GoLogX/releases) | ✓ (goreleaser, `GITHUB_TOKEN`) |
+| **.deb (Debian/Ubuntu)** | Debian-family Linux users | `sudo dpkg -i logx_X.Y.Z_linux_amd64.deb` (download from releases) | ✓ (goreleaser nfpms, attached to GH Release) |
+| **.rpm (RHEL/Fedora/SUSE)** | RPM-family Linux users | `sudo rpm -i logx-X.Y.Z-1.x86_64.rpm` (download from releases) | ✓ (goreleaser nfpms, attached to GH Release) |
+| **Universal install script** | Any Linux / macOS user, scriptable | `curl -fsSL https://raw.githubusercontent.com/AyoubTadlaoui/GoLogX/main/install.sh \| sh` | ✓ (script lives in repo, always pulls the latest GH Release) |
 | **GHCR Docker image** | Container / CI users | `docker run --rm -i ghcr.io/ayoubtadlaoui/logx:X.Y.Z < log.json` | ✓ (multi-arch via goreleaser + buildx, `GITHUB_TOKEN` is enough) |
 
-Roadmap channels not yet wired: Scoop (Windows), WinGet, Arch AUR, Nix flake.
+Roadmap channels not yet wired: Arch AUR, Nix flake, Snap.
 
 ## Tagging and releasing
 

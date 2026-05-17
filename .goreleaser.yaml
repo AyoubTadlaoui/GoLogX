@@ -45,6 +45,36 @@ archives:
 checksum:
   name_template: 'checksums.txt'
 
+# Linux native packages — .deb (Debian/Ubuntu) and .rpm (RHEL/Fedora/SUSE).
+# Zero new infra: they're produced by goreleaser's nfpms pipe and attached
+# to the GitHub Release as additional assets. Install:
+#
+#   dpkg -i logx_0.1.5_amd64.deb        # Debian/Ubuntu
+#   rpm -i logx-0.1.5-1.x86_64.rpm      # RHEL/Fedora/SUSE
+nfpms:
+  - id: logx
+    package_name: logx
+    file_name_template: '{{ .ConventionalFileName }}'
+    builds: [logx]
+    formats: [deb, rpm]
+    vendor: AyoubTadlaoui
+    homepage: https://github.com/AyoubTadlaoui/GoLogX
+    maintainer: Ayoub Tadlaoui <atlas.kaisar@icloud.com>
+    description: |-
+      logx — pretty-print JSON slog logs from stdin, files, or follow mode.
+      A small, zero-dependency companion CLI to the GoLogX Go library.
+    license: MIT
+    section: utils
+    priority: optional
+    bindir: /usr/bin
+    contents:
+      - src: LICENSE
+        dst: /usr/share/doc/logx/LICENSE
+      - src: README.md
+        dst: /usr/share/doc/logx/README.md
+      - src: CHANGELOG.md
+        dst: /usr/share/doc/logx/CHANGELOG.md
+
 # Homebrew tap — formula auto-updated on every tag.
 #
 # Requires a Personal Access Token (PAT) with `repo` scope on the GoLogX repo's
@@ -76,6 +106,73 @@ brews:
     # Skip the tap push when the PAT is missing so the rest of the release
     # (GHCR + GitHub Release) still publishes cleanly. Once the secret is set,
     # future tags auto-push.
+    skip_upload: '{{ if isEnvSet "HOMEBREW_TAP_GITHUB_TOKEN" }}false{{ else }}true{{ end }}'
+
+# Scoop bucket — Windows manifest auto-updated on every tag.
+# Reuses HOMEBREW_TAP_GITHUB_TOKEN (the PAT already has `repo` scope,
+# which is enough to push to either AyoubTadlaoui/homebrew-tap or
+# AyoubTadlaoui/scoop-bucket).
+scoops:
+  - name: logx
+    repository:
+      owner: AyoubTadlaoui
+      name: scoop-bucket
+      branch: main
+      token: '{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}'
+    directory: bucket
+    homepage: https://github.com/AyoubTadlaoui/GoLogX
+    description: Pretty-print JSON slog logs from stdin, files, or follow mode
+    license: MIT
+    commit_author:
+      name: Ayoub Tadlaoui
+      email: atlas.kaisar@icloud.com
+    commit_msg_template: 'logx: bump scoop manifest to {{ .Tag }}'
+    skip_upload: '{{ if isEnvSet "HOMEBREW_TAP_GITHUB_TOKEN" }}false{{ else }}true{{ end }}'
+
+# WinGet — Microsoft's official Windows package manager.
+# On every tag, goreleaser:
+#   1. Generates the YAML manifest for AyoubTadlaoui.logx
+#   2. Pushes it to a branch on the maintainer's fork (AyoubTadlaoui/winget-pkgs)
+#   3. Opens a PR from the fork to microsoft/winget-pkgs (master)
+# Microsoft auto-validates + human-reviews submissions. The first PR per
+# publisher takes 1–3 days; subsequent releases often auto-merge.
+#
+# Reuses HOMEBREW_TAP_GITHUB_TOKEN (the same `repo`-scoped PAT works for
+# every fork-write + PR target on github.com that you own).
+winget:
+  - name: logx
+    publisher: AyoubTadlaoui
+    publisher_url: https://github.com/AyoubTadlaoui
+    publisher_support_url: https://github.com/AyoubTadlaoui/GoLogX/issues
+    package_identifier: AyoubTadlaoui.logx
+    license: MIT
+    license_url: https://github.com/AyoubTadlaoui/GoLogX/blob/main/LICENSE
+    homepage: https://github.com/AyoubTadlaoui/GoLogX
+    short_description: Pretty-print JSON slog logs from stdin, files, or follow mode
+    description: |
+      logx is a small, zero-dependency CLI that consumes JSON slog records
+      (the standard log/slog format) and renders them as colored,
+      human-friendly lines. It supports stdin pipelines, file arguments,
+      tail-style follow mode, level filtering, and substring grep, and
+      passes through non-JSON lines unchanged so panics aren't swallowed.
+    release_notes_url: 'https://github.com/AyoubTadlaoui/GoLogX/releases/tag/{{.Tag}}'
+    tags: [logging, slog, cli, devtools, json]
+    commit_author:
+      name: Ayoub Tadlaoui
+      email: atlas.kaisar@icloud.com
+    commit_msg_template: 'New version: {{ .PackageIdentifier }} {{ .Version }}'
+    repository:
+      owner: AyoubTadlaoui
+      name: winget-pkgs
+      branch: 'AyoubTadlaoui.logx-{{ .Version }}'
+      token: '{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}'
+      pull_request:
+        enabled: true
+        draft: false
+        base:
+          owner: microsoft
+          name: winget-pkgs
+          branch: master
     skip_upload: '{{ if isEnvSet "HOMEBREW_TAP_GITHUB_TOKEN" }}false{{ else }}true{{ end }}'
 
 # Docker / GHCR — one image per arch, joined into a multi-arch manifest.

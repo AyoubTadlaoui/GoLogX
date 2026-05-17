@@ -5,6 +5,47 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 ## [Unreleased]
 
+## [0.1.5] — 2026-05-18
+
+### Added — four new install channels
+
+- **Linux native packages** (`.deb` + `.rpm`) attached to every GitHub Release
+  via goreleaser nfpms. No new infrastructure required.
+  ```bash
+  sudo dpkg -i logx_0.1.5_linux_amd64.deb     # Debian / Ubuntu
+  sudo rpm -i logx-0.1.5-1.x86_64.rpm         # RHEL / Fedora / SUSE
+  ```
+- **Universal install script** `install.sh` (POSIX `sh`, works on bash / dash /
+  busybox). Detects OS + arch, downloads the right release tarball, verifies
+  its SHA256 against `checksums.txt`, and installs to `/usr/local/bin` (or
+  `$HOME/.local/bin` when not root). Honors `VERSION` and `INSTALL_DIR` env
+  vars. Verified end-to-end against v0.1.4.
+  ```bash
+  curl -fsSL https://raw.githubusercontent.com/AyoubTadlaoui/GoLogX/main/install.sh | sh
+  ```
+- **Scoop bucket** for Windows users. Manifest auto-pushed to
+  [`AyoubTadlaoui/scoop-bucket`](https://github.com/AyoubTadlaoui/scoop-bucket)
+  on every tag (reuses the existing `HOMEBREW_TAP_GITHUB_TOKEN` PAT).
+  ```powershell
+  scoop bucket add atlas https://github.com/AyoubTadlaoui/scoop-bucket
+  scoop install logx
+  ```
+- **WinGet submission** to Microsoft's official Windows package manager. On
+  every tag, goreleaser pushes the manifest to a branch on the maintainer's
+  fork ([`AyoubTadlaoui/winget-pkgs`](https://github.com/AyoubTadlaoui/winget-pkgs))
+  and opens a PR upstream to [`microsoft/winget-pkgs`](https://github.com/microsoft/winget-pkgs).
+  Microsoft reviews the first PR (1–3 days); subsequent releases often
+  auto-merge.
+  ```powershell
+  winget install AyoubTadlaoui.logx
+  ```
+
+### Changed
+
+- README install section restructured to lead with package managers
+  (Homebrew / Scoop / WinGet) before scripts and binaries.
+- DISTRIBUTION.md install matrix updated to include all nine channels.
+
 ## [0.1.4] — 2026-05-18
 
 ### Fixed
@@ -117,7 +158,8 @@ First public release.
 - **Distribution** — goreleaser config; tagged releases publish prebuilt binaries for linux/darwin/windows × amd64/arm64.
 - **Docs** — top-level README with quickstart, runnable `examples/basic`, godoc examples, CONTRIBUTING.
 
-[Unreleased]: https://github.com/AyoubTadlaoui/GoLogX/compare/v0.1.4...HEAD
+[Unreleased]: https://github.com/AyoubTadlaoui/GoLogX/compare/v0.1.5...HEAD
+[0.1.5]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.5
 [0.1.4]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.4
 [0.1.3]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.3
 [0.1.2]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.2

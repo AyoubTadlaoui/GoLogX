@@ -37,14 +37,30 @@ go get github.com/AyoubTadlaoui/GoLogX/logx@latest
 Pick whichever fits your machine:
 
 ```bash
-# Homebrew (macOS / Linux)
+# Homebrew (macOS + Linux)
 brew install AyoubTadlaoui/tap/logx
 
-# Go install (any OS with Go ≥ 1.22)
-go install github.com/AyoubTadlaoui/GoLogX/cmd/logx@latest
+# Scoop (Windows)
+scoop bucket add atlas https://github.com/AyoubTadlaoui/scoop-bucket
+scoop install logx
+
+# WinGet (Windows, once Microsoft accepts the submission)
+winget install AyoubTadlaoui.logx
+
+# Universal install script (Linux + macOS, amd64 + arm64) — verifies SHA256
+curl -fsSL https://raw.githubusercontent.com/AyoubTadlaoui/GoLogX/main/install.sh | sh
+
+# Debian / Ubuntu — pick the .deb from the releases page
+sudo dpkg -i logx_0.1.5_linux_amd64.deb
+
+# RHEL / Fedora / SUSE — pick the .rpm from the releases page
+sudo rpm -i logx-0.1.5-1.x86_64.rpm
 
 # Docker (linux/amd64, linux/arm64)
 docker run --rm -i ghcr.io/ayoubtadlaoui/logx:latest < app.json
+
+# Go install (any OS with Go ≥ 1.22)
+go install github.com/AyoubTadlaoui/GoLogX/cmd/logx@latest
 
 # Prebuilt binary
 # https://github.com/AyoubTadlaoui/GoLogX/releases
