@@ -18,6 +18,7 @@ import (
 	"io"
 	"log/slog"
 	"os"
+	"runtime/debug"
 	"strconv"
 	"strings"
 	"time"
@@ -26,7 +27,20 @@ import (
 )
 
 // version is overridden at build time via -ldflags "-X main.version=...".
+// When unset (e.g. plain `go install` without ldflags) we fall back to the
+// version recorded in the module build info so users still see something
+// meaningful from `logx -version`.
 var version = "dev"
+
+func resolvedVersion() string {
+	if version != "dev" && version != "" {
+		return version
+	}
+	if info, ok := debug.ReadBuildInfo(); ok && info.Main.Version != "" && info.Main.Version != "(devel)" {
+		return info.Main.Version
+	}
+	return version
+}
 
 type config struct {
 	level      slog.Level
@@ -49,12 +63,12 @@ Usage:
   myapp 2>&1 | logx [flags]
 
 Flags:
-`, version)
+`, resolvedVersion())
 		fs.PrintDefaults()
 	}
 
 	levelStr := fs.String("level", "debug", "minimum level to show (debug, info, warn, error)")
-	grep := fs.String("grep", "", "only show lines whose JSON payload contains this substring")
+	grep := fs.String("grep", "", "only show lines containing this substring (raw line, before JSON parse)")
 	follow := fs.Bool("f", false, "follow the file like 'tail -f' (single file only)")
 	noColor := fs.Bool("no-color", false, "disable ANSI colors")
 	addSource := fs.Bool("source", false, "show source file:line if present in record")
@@ -65,7 +79,7 @@ Flags:
 		return nil, err
 	}
 	if *showVer {
-		fmt.Fprintln(stderr, version)
+		fmt.Fprintln(stderr, resolvedVersion())
 		return nil, errVersionPrinted
 	}
 

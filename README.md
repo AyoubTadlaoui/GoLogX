@@ -72,9 +72,9 @@ func main() {
 ```
 
 ```text
-21:10:27.036 INF server up    port=8080 env=prod
-21:10:27.120 WRN slow query   ms=230 table=users
-21:10:27.120 ERR upstream     err=timeout retries=3
+21:10:27.036 INF server up port=8080 env=prod
+21:10:27.120 WRN slow query ms=230 table=users
+21:10:27.120 ERR upstream err=timeout retries=3
 ```
 
 ### Pretty to stderr + JSON to a rotating file
@@ -131,7 +131,7 @@ All flags:
 | Flag | Default | Meaning |
 |---|---|---|
 | `-level` | `debug` | Minimum level to show (`debug`/`info`/`warn`/`error`) |
-| `-grep` | _empty_ | Only show lines whose JSON payload contains this substring |
+| `-grep` | _empty_ | Only show lines containing this substring (applied to the raw input line, so it matches JSON-encoded fields and pass-through text alike) |
 | `-f`   | `false` | Follow the file like `tail -f` (single file only) |
 | `-no-color` | `false` | Disable ANSI color escapes |
 | `-source` | `false` | Show `file:line` if `source` is present in the record |

@@ -99,8 +99,9 @@ func TestRun_VersionFlag(t *testing.T) {
 	if exit != 0 {
 		t.Fatalf("exit=%d, want 0", exit)
 	}
-	if !strings.Contains(stderr.String(), version) {
-		t.Fatalf("version output missing %q: %q", version, stderr.String())
+	want := resolvedVersion()
+	if !strings.Contains(stderr.String(), want) {
+		t.Fatalf("version output missing %q: %q", want, stderr.String())
 	}
 }
 
@@ -136,6 +137,17 @@ func TestDecodeRecord_SourceObject(t *testing.T) {
 	})
 	if !found {
 		t.Fatal("source attr missing")
+	}
+}
+
+func TestResolvedVersion_FallsBackToBuildInfo(t *testing.T) {
+	// In unit tests (go test), ldflags isn't applied, so `version` stays "dev".
+	// resolvedVersion should consult debug.ReadBuildInfo and return either the
+	// module version (when run via `go install foo@vX.Y.Z`) or fall back to "dev"
+	// when neither source provides anything. Both outcomes are non-empty.
+	got := resolvedVersion()
+	if got == "" {
+		t.Fatal("resolvedVersion returned empty string")
 	}
 }
 
