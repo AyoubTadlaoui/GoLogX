@@ -5,6 +5,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 ## [Unreleased]
 
+## [0.1.4] — 2026-05-18
+
+### Fixed
+
+- `logx -version` now writes to **stdout**, not stderr. This matches the
+  convention used by `git --version`, `go version`, `node --version`,
+  `docker --version`, etc., and is what every shell pipeline expects:
+  ```bash
+  V=$(logx -version)     # now actually captures "0.1.4"
+  ```
+  Previously the version landed on stderr, which broke
+  `brew test AyoubTadlaoui/tap/logx`: the auto-generated formula calls
+  `shell_output("#{bin}/logx -version")` (stdout-only) and saw an empty
+  string. The regression test was strengthened to assert (a) the version
+  shows up on stdout and (b) stderr stays clean.
+
+### Unchanged
+
+- Error messages, parse-failure usage banners, and `-h` help still go to
+  stderr — that's where the `flag` package puts them by default and what
+  `tool 2>/dev/null` users expect.
+
 ## [0.1.3] — 2026-05-17
 
 First release with **end-to-end automated tap updates**: the
@@ -95,7 +117,8 @@ First public release.
 - **Distribution** — goreleaser config; tagged releases publish prebuilt binaries for linux/darwin/windows × amd64/arm64.
 - **Docs** — top-level README with quickstart, runnable `examples/basic`, godoc examples, CONTRIBUTING.
 
-[Unreleased]: https://github.com/AyoubTadlaoui/GoLogX/compare/v0.1.3...HEAD
+[Unreleased]: https://github.com/AyoubTadlaoui/GoLogX/compare/v0.1.4...HEAD
+[0.1.4]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.4
 [0.1.3]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.3
 [0.1.2]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.2
 [0.1.1]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.1

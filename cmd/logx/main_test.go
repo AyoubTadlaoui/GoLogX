@@ -100,8 +100,13 @@ func TestRun_VersionFlag(t *testing.T) {
 		t.Fatalf("exit=%d, want 0", exit)
 	}
 	want := resolvedVersion()
-	if !strings.Contains(stderr.String(), want) {
-		t.Fatalf("version output missing %q: %q", want, stderr.String())
+	// -version must write to STDOUT (matching git/go/node/etc.) so that
+	// $(logx -version) and Homebrew's `shell_output` capture it correctly.
+	if !strings.Contains(stdout.String(), want) {
+		t.Fatalf("version output missing on stdout (want %q, got stdout=%q stderr=%q)", want, stdout.String(), stderr.String())
+	}
+	if strings.Contains(stderr.String(), want) {
+		t.Fatalf("-version leaked onto stderr: %q", stderr.String())
 	}
 }
 

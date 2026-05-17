@@ -52,8 +52,10 @@ type config struct {
 	files      []string
 }
 
-func parseFlags(argv []string, stderr io.Writer) (*config, error) {
+func parseFlags(argv []string, stdout, stderr io.Writer) (*config, error) {
 	fs := flag.NewFlagSet("logx", flag.ContinueOnError)
+	// Errors and -h usage go to stderr — that's where flag package puts them
+	// and what `tool 2>/dev/null` users expect when they're suppressing chatter.
 	fs.SetOutput(stderr)
 	fs.Usage = func() {
 		fmt.Fprintf(stderr, `logx %s — pretty-print JSON slog logs
@@ -79,7 +81,10 @@ Flags:
 		return nil, err
 	}
 	if *showVer {
-		fmt.Fprintln(stderr, resolvedVersion())
+		// -version output goes to STDOUT, matching git/go/node/etc. and
+		// letting `$(logx -version)` capture it. The previous version wrote
+		// to stderr, which broke `brew test`'s shell_output() assertion.
+		fmt.Fprintln(stdout, resolvedVersion())
 		return nil, errVersionPrinted
 	}
 
@@ -105,7 +110,7 @@ var errVersionPrinted = errors.New("version printed")
 
 // run is the testable entry point. It returns the process exit code.
 func run(stdin io.Reader, stdout, stderr io.Writer, argv []string) int {
-	cfg, err := parseFlags(argv, stderr)
+	cfg, err := parseFlags(argv, stdout, stderr)
 	if err != nil {
 		if errors.Is(err, errVersionPrinted) {
 			return 0
