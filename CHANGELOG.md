@@ -15,7 +15,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
   `HOMEBREW_TAP_GITHUB_TOKEN` secret is configured — see DISTRIBUTION.md).
 - **Docker image on GHCR**: multi-arch (linux/amd64, linux/arm64) images
   built from a minimal distroless base. Pull with
-  `docker pull ghcr.io/ayoubtadlaoui/logx:v0.1.2` (or `:latest`).
+  `docker pull ghcr.io/ayoubtadlaoui/logx:0.1.2` (or `:latest`).
+  Note: docker tags omit the leading `v` (`0.1.2`, not `v0.1.2`) per the
+  common Docker convention; goreleaser tags + git tags keep the `v`.
 - **`DISTRIBUTION.md`**: maintainer reference covering every install channel,
   the tag-release flow, the one-time PAT setup for tap automation, and the
   one-time visibility flip for the GHCR image.

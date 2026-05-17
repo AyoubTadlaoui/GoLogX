@@ -10,7 +10,7 @@ How GoLogX is shipped, by audience.
 | **`go install`** | CLI users on any Go-friendly machine | `go install github.com/AyoubTadlaoui/GoLogX/cmd/logx@vX.Y.Z` | ✓ (built into the Go ecosystem) |
 | **Homebrew tap** | macOS + Linux CLI users | `brew install AyoubTadlaoui/tap/logx` | ✓ (goreleaser pushes to [`AyoubTadlaoui/homebrew-tap`](https://github.com/AyoubTadlaoui/homebrew-tap), **requires `HOMEBREW_TAP_GITHUB_TOKEN` secret**) |
 | **GitHub Releases binaries** | All OSes, no Go required | Download from [releases](https://github.com/AyoubTadlaoui/GoLogX/releases) | ✓ (goreleaser, `GITHUB_TOKEN`) |
-| **GHCR Docker image** | Container / CI users | `docker run --rm -i ghcr.io/ayoubtadlaoui/logx:vX.Y.Z < log.json` | ✓ (multi-arch via goreleaser + buildx, `GITHUB_TOKEN` is enough) |
+| **GHCR Docker image** | Container / CI users | `docker run --rm -i ghcr.io/ayoubtadlaoui/logx:X.Y.Z < log.json` | ✓ (multi-arch via goreleaser + buildx, `GITHUB_TOKEN` is enough) |
 
 Roadmap channels not yet wired: Scoop (Windows), WinGet, Arch AUR, Nix flake.
 
@@ -30,7 +30,7 @@ The [`Release` workflow](.github/workflows/release.yml) takes over:
 
 1. Builds `cmd/logx` for linux / darwin / windows × amd64 / arm64.
 2. Creates a GitHub Release with the binaries and `checksums.txt`.
-3. Builds and pushes multi-arch Docker images to `ghcr.io/ayoubtadlaoui/logx:vX.Y.Z` and `:latest`.
+3. Builds and pushes multi-arch Docker images to `ghcr.io/ayoubtadlaoui/logx:X.Y.Z` (no `v` prefix — Docker convention) and `:latest`.
 4. Regenerates `Formula/logx.rb` in `AyoubTadlaoui/homebrew-tap` and commits it (if the PAT secret is set).
 
 ## Maintainer setup (one-time)
@@ -80,9 +80,9 @@ curl -sL https://github.com/AyoubTadlaoui/GoLogX/releases/download/$TAG/checksum
 # 3. Homebrew
 brew update && brew upgrade AyoubTadlaoui/tap/logx && logx -version
 
-# 4. Docker
-docker pull ghcr.io/ayoubtadlaoui/logx:$TAG
-docker run --rm ghcr.io/ayoubtadlaoui/logx:$TAG -version
+# 4. Docker (note: tag is the version WITHOUT the leading 'v')
+docker pull ghcr.io/ayoubtadlaoui/logx:${TAG#v}
+docker run --rm ghcr.io/ayoubtadlaoui/logx:${TAG#v} -version
 ```
 
 If all four print the expected version, the release is good.
