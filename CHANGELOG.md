@@ -5,6 +5,34 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 ## [Unreleased]
 
+## [0.1.13] — 2026-05-18
+
+### Changed
+
+- Screenshots now carry the **atlas-ragnarok storm-fire vignette** — thunder-blue
+  glow at the top edge, crimson glow at the bottom, radial darkening toward the
+  corners — same colors and geometry as the live Ghostty shader, implemented in
+  2D and composited onto every frame in post. Brings the GoLogX visual identity
+  into alignment with the author's actual terminal aesthetic.
+- Window chrome (Mac traffic-light dots) and the slate-blue margin are gone.
+  The terminal is now edge-to-edge so the vignette sits flush over the whole
+  canvas, matching what you'd see in a real Ghostty session.
+
+### Added
+
+- `docs/screenshots/_vignette.py` — Python+PIL generator that produces the
+  vignette overlay at any dimension. Reproduces the GLSL shader exactly:
+  `thunder_blue = vec3(0.055, 0.115, 0.320)`, `red_tint = vec3(0.220, 0.014, 0.028)`,
+  `vignette = smoothstep(0.18, 1.0, dist)`, glow bands tightened to
+  `smoothstep(0.78, 0.97)` to compensate for the absence of the shader's
+  luminance mask in this 2D pipeline.
+
+### Tooling
+
+- `docs/screenshots/gen.sh` now requires `python3` + `pillow` and runs the
+  full pipeline: vhs → vignette composite → WebP + MP4. Two new ffmpeg
+  passes (one for the hero PNG, one for every frame of the animated GIF).
+
 ## [0.1.12] — 2026-05-18
 
 ### Changed
@@ -300,7 +328,8 @@ First public release.
 - **Distribution** — goreleaser config; tagged releases publish prebuilt binaries for linux/darwin/windows × amd64/arm64.
 - **Docs** — top-level README with quickstart, runnable `examples/basic`, godoc examples, CONTRIBUTING.
 
-[Unreleased]: https://github.com/AyoubTadlaoui/GoLogX/compare/v0.1.12...HEAD
+[Unreleased]: https://github.com/AyoubTadlaoui/GoLogX/compare/v0.1.13...HEAD
+[0.1.13]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.13
 [0.1.12]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.12
 [0.1.11]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.11
 [0.1.10]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.10

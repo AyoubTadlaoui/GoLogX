@@ -29,3 +29,8 @@ go.work.sum
 *.log
 tmp/
 scratch/
+
+# Intermediate artifacts from docs/screenshots/gen.sh
+docs/screenshots/_hero_raw.png
+docs/screenshots/_follow_raw.gif
+docs/screenshots/_vignette_*.png
