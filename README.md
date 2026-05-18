@@ -24,11 +24,12 @@
 <sub>Also available as [GIF](docs/screenshots/follow.gif) or [MP4](docs/screenshots/follow.mp4).</sub>
 
 > Theme: [atlas-ragnarok](https://github.com/AyoubTadlaoui/atlas-ragnarok).
-> The storm-fire glow is the actual atlas-ragnarok vignette — same colors,
-> same geometry, same shader spec — implemented in 2D by
-> `docs/screenshots/_vignette.py` and composited onto every frame.
-> Regenerate with `sh docs/screenshots/gen.sh` (needs `vhs`, `ffmpeg`,
-> `webp`, `pillow`).
+> The storm-fire glow is pixel-exact to the live GLSL shader —
+> `docs/screenshots/_shader.py` reimplements the shader in NumPy
+> (same colors, same smoothsteps, same luminance mask) and applies it
+> to every captured frame. Text never gets tinted; backgrounds carry
+> the glow. Regenerate with `sh docs/screenshots/gen.sh` (needs `vhs`,
+> `ffmpeg`, `webp`, `pillow`, `numpy`).
 
 ---
 

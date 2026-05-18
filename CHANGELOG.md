@@ -5,6 +5,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 ## [Unreleased]
 
+## [0.1.14] — 2026-05-18
+
+### Fixed
+
+- Screenshot vignette is now **pixel-exact to the live GLSL shader**, with
+  the luminance mask applied. In v0.1.13 the static-PNG overlay washed text
+  in the tinted bands because it couldn't honor the per-pixel
+  `bg_mask = 1 - smoothstep(0.04, 0.18, lum)` that the real shader uses to
+  protect text. Now text stays crisp under the storm-fire glow.
+
+### Changed
+
+- `docs/screenshots/_vignette.py` replaced with `_shader.py` — a NumPy+PIL
+  pixel-by-pixel reimplementation of `atlas-ragnarok.glsl`. Same geometry,
+  same colors, same luminance mask. Composited per-frame instead of as a
+  static overlay.
+- `gen.sh` pipeline now writes shaded PNG frames and lets ffmpeg's
+  `palettegen`/`paletteuse` build the optimized GIF (instead of PIL's
+  weaker GIF encoder), keeping the output around the same size as the raw
+  vhs capture (~170KB for the WebP).
+
 ## [0.1.13] — 2026-05-18
 
 ### Changed
@@ -328,7 +349,8 @@ First public release.
 - **Distribution** — goreleaser config; tagged releases publish prebuilt binaries for linux/darwin/windows × amd64/arm64.
 - **Docs** — top-level README with quickstart, runnable `examples/basic`, godoc examples, CONTRIBUTING.
 
-[Unreleased]: https://github.com/AyoubTadlaoui/GoLogX/compare/v0.1.13...HEAD
+[Unreleased]: https://github.com/AyoubTadlaoui/GoLogX/compare/v0.1.14...HEAD
+[0.1.14]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.14
 [0.1.13]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.13
 [0.1.12]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.12
 [0.1.11]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.11
