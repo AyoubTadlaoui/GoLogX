@@ -5,6 +5,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 ## [Unreleased]
 
+## [0.1.10] — 2026-05-18
+
+### Changed
+
+- Screenshots now framed as a card — vhs `Set WindowBar Colorful` adds
+  Mac-style traffic-light controls, `Set Margin/MarginFill #0F172A` adds a
+  slate-blue surround, `Set BorderRadius 10` rounds the corners. The
+  pure-black atlas-ragnarok terminal now reads as a distinct rectangle on
+  GitHub's dark page background instead of bleeding into it. Theme palette
+  (blue WRN, crimson ERR, peppermint INF/DBG, gray attrs) is unchanged but
+  much more visible thanks to the clear edge.
+
 ## [0.1.9] — 2026-05-18
 
 ### Changed
@@ -257,7 +269,8 @@ First public release.
 - **Distribution** — goreleaser config; tagged releases publish prebuilt binaries for linux/darwin/windows × amd64/arm64.
 - **Docs** — top-level README with quickstart, runnable `examples/basic`, godoc examples, CONTRIBUTING.
 
-[Unreleased]: https://github.com/AyoubTadlaoui/GoLogX/compare/v0.1.9...HEAD
+[Unreleased]: https://github.com/AyoubTadlaoui/GoLogX/compare/v0.1.10...HEAD
+[0.1.10]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.10
 [0.1.9]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.9
 [0.1.8]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.8
 [0.1.7]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.7
