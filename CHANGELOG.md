@@ -5,6 +5,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 ## [Unreleased]
 
+## [0.1.8] — 2026-05-18
+
+### Added
+
+- **README screenshots** — a static PNG hero shot (rendered via Charmbracelet
+  `freeze`) and an animated GIF (rendered via `vhs`) showing `logx -f` tailing
+  a JSON stream in real time. Both live in `docs/screenshots/` and are
+  embedded at the top of the README.
+- `docs/screenshots/gen.sh` regenerates both from
+  `docs/screenshots/sample.json` (input for the hero) and
+  `docs/screenshots/follow.tape` (vhs script for the GIF). Re-run after CLI
+  output changes — no version baked into the images.
+
 ## [0.1.7] — 2026-05-18
 
 ### Added
@@ -215,7 +228,8 @@ First public release.
 - **Distribution** — goreleaser config; tagged releases publish prebuilt binaries for linux/darwin/windows × amd64/arm64.
 - **Docs** — top-level README with quickstart, runnable `examples/basic`, godoc examples, CONTRIBUTING.
 
-[Unreleased]: https://github.com/AyoubTadlaoui/GoLogX/compare/v0.1.7...HEAD
+[Unreleased]: https://github.com/AyoubTadlaoui/GoLogX/compare/v0.1.8...HEAD
+[0.1.8]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.8
 [0.1.7]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.7
 [0.1.6]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.6
 [0.1.5]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.5

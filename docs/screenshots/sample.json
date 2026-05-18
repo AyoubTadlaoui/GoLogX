@@ -1,0 +1,10 @@
+{"time":"2026-05-18T09:14:02.001Z","level":"INFO","msg":"server up","service":"api","port":8080,"env":"prod"}
+{"time":"2026-05-18T09:14:02.183Z","level":"DEBUG","msg":"warming caches","items":1024,"ttl_s":300}
+{"time":"2026-05-18T09:14:02.402Z","level":"INFO","msg":"request","method":"GET","path":"/v1/users/42","status":200,"dur_ms":12}
+{"time":"2026-05-18T09:14:02.667Z","level":"INFO","msg":"request","method":"POST","path":"/v1/orders","status":201,"dur_ms":48}
+{"time":"2026-05-18T09:14:03.115Z","level":"WARN","msg":"slow query","query":"orders.list","ms":230,"rows":4812}
+{"time":"2026-05-18T09:14:03.402Z","level":"INFO","msg":"request","method":"GET","path":"/v1/healthz","status":200,"dur_ms":1}
+{"time":"2026-05-18T09:14:03.881Z","level":"ERROR","msg":"upstream failed","service":"payments","err":"timeout after 5s","retries":3,"trace_id":"4f9c1e2a"}
+{"time":"2026-05-18T09:14:04.014Z","level":"INFO","msg":"retry succeeded","service":"payments","attempt":4,"dur_ms":612}
+{"time":"2026-05-18T09:14:04.302Z","level":"INFO","msg":"request","method":"GET","path":"/v1/users/99","status":404,"dur_ms":3}
+{"time":"2026-05-18T09:14:04.701Z","level":"DEBUG","msg":"cache hit","key":"user:42","age_s":12}

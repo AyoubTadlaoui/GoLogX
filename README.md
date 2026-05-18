@@ -9,6 +9,14 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/AyoubTadlaoui/GoLogX)](https://goreportcard.com/report/github.com/AyoubTadlaoui/GoLogX)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
+![logx pretty output](docs/screenshots/hero.png)
+
+`logx -f app.json` tailing a live JSON stream:
+
+![logx follow mode](docs/screenshots/follow.gif)
+
+> Regenerate both with `sh docs/screenshots/gen.sh` — requires `vhs` and Charmbracelet `freeze`.
+
 ---
 
 ## Why
