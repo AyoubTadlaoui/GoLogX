@@ -10,7 +10,7 @@ How GoLogX is shipped, by audience.
 | **`go install`** | CLI users on any Go-friendly machine | `go install github.com/AyoubTadlaoui/GoLogX/cmd/logx@vX.Y.Z` | ✓ (built into the Go ecosystem) |
 | **Homebrew tap** | macOS + Linux CLI users | `brew install AyoubTadlaoui/tap/logx` | ✓ (goreleaser pushes to [`AyoubTadlaoui/homebrew-tap`](https://github.com/AyoubTadlaoui/homebrew-tap), uses `HOMEBREW_TAP_GITHUB_TOKEN` PAT) |
 | **Scoop bucket** | Windows CLI users | `scoop bucket add atlas https://github.com/AyoubTadlaoui/scoop-bucket && scoop install logx` | ✓ (goreleaser pushes to [`AyoubTadlaoui/scoop-bucket`](https://github.com/AyoubTadlaoui/scoop-bucket), reuses the same PAT) |
-| **WinGet** | Windows CLI users | `winget install AyoubTadlaoui.logx` | ✓ on each tag goreleaser pushes to your fork [`AyoubTadlaoui/winget-pkgs`](https://github.com/AyoubTadlaoui/winget-pkgs) and opens a PR to [`microsoft/winget-pkgs`](https://github.com/microsoft/winget-pkgs); Microsoft reviews the first PR (1–3 days), later releases tend to auto-merge |
+| **WinGet** | Windows CLI users | `winget install AyoubTadlaoui.logx` | **Manual opt-in** — see [WinGet submission cadence](#winget-submission-cadence). Trigger via Actions → Release → "Run workflow" with `submit_winget=true`. Goreleaser then pushes to your fork [`AyoubTadlaoui/winget-pkgs`](https://github.com/AyoubTadlaoui/winget-pkgs) and opens a PR to [`microsoft/winget-pkgs`](https://github.com/microsoft/winget-pkgs). |
 | **GitHub Releases binaries** | All OSes, no Go required | Download from [releases](https://github.com/AyoubTadlaoui/GoLogX/releases) | ✓ (goreleaser, `GITHUB_TOKEN`) |
 | **.deb (Debian/Ubuntu)** | Debian-family Linux users | `sudo dpkg -i logx_X.Y.Z_linux_amd64.deb` (download from releases) | ✓ (goreleaser nfpms, attached to GH Release) |
 | **.rpm (RHEL/Fedora/SUSE)** | RPM-family Linux users | `sudo rpm -i logx-X.Y.Z-1.x86_64.rpm` (download from releases) | ✓ (goreleaser nfpms, attached to GH Release) |
@@ -39,6 +39,26 @@ The [`Release` workflow](.github/workflows/release.yml) takes over:
 2. Creates a GitHub Release with the binaries and `checksums.txt`.
 3. Builds and pushes multi-arch Docker images to `ghcr.io/ayoubtadlaoui/logx:X.Y.Z` (no `v` prefix — Docker convention) and `:latest`.
 4. Regenerates `Formula/logx.rb` in `AyoubTadlaoui/homebrew-tap` and commits it (if the PAT secret is set).
+5. Updates the Scoop manifest in `AyoubTadlaoui/scoop-bucket` (if the PAT secret is set).
+6. Pushes a fresh PKGBUILD to AUR `logx-bin` (if `AUR_KEY` is set).
+
+WinGet is **not** in that list — see below.
+
+### WinGet submission cadence
+
+WinGet submissions go through human review at `microsoft/winget-pkgs`. Auto-submitting on every `v*` tag floods Microsoft's queue with stale PRs that reviewers tend to skip wholesale (a single open PR per package is the norm). The pipeline therefore gates the WinGet pipe on a `WINGET_SUBMIT` env var that is **only set when you explicitly opt in**.
+
+To submit a release to WinGet:
+
+1. Make sure the tag is already cut and the regular release workflow finished cleanly (binaries on GH Release, etc.).
+2. Go to **Actions → Release → Run workflow**.
+3. Pick the branch or tag.
+4. Tick **`submit_winget`**.
+5. Click **Run workflow**.
+
+That run sets `WINGET_SUBMIT=1`, goreleaser pushes the manifest to `AyoubTadlaoui/winget-pkgs`, and a PR opens against `microsoft/winget-pkgs`. Microsoft reviews the first PR per publisher (1–3 days); subsequent submissions for the same package often auto-merge.
+
+Cadence rule of thumb: bundle several patch releases and submit one WinGet PR per batch, not one per tag.
 
 ## Maintainer setup (one-time)
 

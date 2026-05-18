@@ -4,6 +4,12 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
+    inputs:
+      submit_winget:
+        description: 'Also submit a WinGet PR to microsoft/winget-pkgs (off by default to avoid queue spam)'
+        type: boolean
+        default: false
 
 permissions:
   contents: write   # create GitHub Release + upload assets
@@ -56,3 +62,10 @@ jobs:
           # (ssh aur@aur.archlinux.org). Drives the logx-bin AUR push.
           # Unset → AUR pipe is skipped cleanly. See DISTRIBUTION.md.
           AUR_KEY: ${{ secrets.AUR_KEY }}
+          # WinGet submission is OPT-IN. Set only when the user manually triggers
+          # the workflow via `workflow_dispatch` with `submit_winget=true`. On
+          # automatic `push: tags` runs this is empty, so the winget pipe is
+          # skipped cleanly via .goreleaser.yaml's `skip_upload` gate. Reason:
+          # WinGet expects ~quarterly cadence, not one PR per patch — auto-
+          # submitting clogs microsoft/winget-pkgs with stale PRs.
+          WINGET_SUBMIT: ${{ github.event_name == 'workflow_dispatch' && inputs.submit_winget == true && '1' || '' }}

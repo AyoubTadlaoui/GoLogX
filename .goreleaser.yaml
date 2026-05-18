@@ -166,12 +166,19 @@ aurs:
     skip_upload: '{{ if isEnvSet "AUR_KEY" }}false{{ else }}true{{ end }}'
 
 # WinGet — Microsoft's official Windows package manager.
-# On every tag, goreleaser:
+# On opt-in, goreleaser:
 #   1. Generates the YAML manifest for AyoubTadlaoui.logx
 #   2. Pushes it to a branch on the maintainer's fork (AyoubTadlaoui/winget-pkgs)
 #   3. Opens a PR from the fork to microsoft/winget-pkgs (master)
 # Microsoft auto-validates + human-reviews submissions. The first PR per
 # publisher takes 1–3 days; subsequent releases often auto-merge.
+#
+# Opt-in gate: WINGET_SUBMIT must be set in addition to HOMEBREW_TAP_GITHUB_TOKEN.
+# Rationale: WinGet expects a low submission cadence (one PR per release burst,
+# not per patch tag). Auto-submitting on every `git push --tags` clogs the
+# microsoft/winget-pkgs queue with stale PRs the maintainers won't merge. The
+# release workflow only sets WINGET_SUBMIT when the user explicitly opts in via
+# `workflow_dispatch` (see .github/workflows/release.yml).
 #
 # Reuses HOMEBREW_TAP_GITHUB_TOKEN (the same `repo`-scoped PAT works for
 # every fork-write + PR target on github.com that you own).
@@ -209,7 +216,7 @@ winget:
           owner: microsoft
           name: winget-pkgs
           branch: master
-    skip_upload: '{{ if isEnvSet "HOMEBREW_TAP_GITHUB_TOKEN" }}false{{ else }}true{{ end }}'
+    skip_upload: '{{ if and (isEnvSet "HOMEBREW_TAP_GITHUB_TOKEN") (isEnvSet "WINGET_SUBMIT") }}false{{ else }}true{{ end }}'
 
 # Docker / GHCR — one image per arch, joined into a multi-arch manifest.
 # Repo path must be lowercase for ghcr.io: ghcr.io/ayoubtadlaoui/logx.
