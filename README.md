@@ -13,9 +13,19 @@
 
 `logx -f app.json` tailing a live JSON stream:
 
-![logx follow mode](docs/screenshots/follow.gif)
+<!--
+  We embed the animation as both <video> (MP4, plays reliably in every
+  browser including Safari with Reduce-Motion enabled) and an <a> link
+  to the GIF (for markdown renderers that don't honor <video>).
+-->
+<video src="docs/screenshots/follow.mp4" controls loop muted playsinline width="100%">
+  Your browser does not support inline video.
+  See the <a href="docs/screenshots/follow.gif">animated GIF</a> instead.
+</video>
 
-> Regenerate both with `sh docs/screenshots/gen.sh` — requires `vhs` and Charmbracelet `freeze`.
+> Theme: [atlas-ragnarok](https://github.com/AyoubTadlaoui/atlas-ragnarok).
+> Regenerate the screenshots and the MP4 with `sh docs/screenshots/gen.sh`
+> (needs `vhs` + `ffmpeg`).
 
 ---
 

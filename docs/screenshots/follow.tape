@@ -12,9 +12,13 @@ Set FontSize        15
 Set Width           1300
 Set Height          560
 Set Padding         24
-Set Theme           "Catppuccin Mocha"
+# atlas-ragnarok — https://github.com/AyoubTadlaoui/atlas-ragnarok
+# Pure black bg, white fg, thunder-blue accents, peppermint greens, crimson reds.
+Set Theme           { "name": "atlas-ragnarok", "background": "#000000", "foreground": "#FFFFFF", "cursor": "#3B82F6", "selection": "#1E3A5F", "black": "#000000", "red": "#FF8080", "green": "#99FFE4", "yellow": "#2563EB", "blue": "#A0A0A0", "purple": "#3B82F6", "cyan": "#99FFE4", "white": "#FFFFFF", "brightBlack": "#505050", "brightRed": "#FF9999", "brightGreen": "#B3FFE4", "brightYellow": "#60A5FA", "brightBlue": "#B0B0B0", "brightPurple": "#93C5FD", "brightCyan": "#99FFE4", "brightWhite": "#FFFFFF" }
 Set TypingSpeed     20ms
 Set PlaybackSpeed   1.0
+# Slower per-frame delay (10 cs ≈ 100ms) helps Safari render reliably.
+Set Framerate       10
 
 # Setup (hidden): clean file, ensure PATH, spawn the background appender.
 Hide
