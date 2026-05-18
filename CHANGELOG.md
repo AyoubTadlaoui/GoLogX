@@ -5,6 +5,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 ## [Unreleased]
 
+## [0.1.11] — 2026-05-18
+
+### Fixed
+
+- README's `<video>` embed for the follow demo now uses the absolute raw
+  GitHub URL (`https://github.com/AyoubTadlaoui/GoLogX/raw/main/...`).
+  GitHub's README sanitizer rewrites relative paths only inside `<img>`
+  and `<a>` — not inside `<video src>` — so v0.1.9 / v0.1.10 rendered an
+  empty `<video>` element with a missing source between the hero and the
+  theme attribution. The MP4 player now actually shows up.
+
 ## [0.1.10] — 2026-05-18
 
 ### Changed
@@ -269,7 +280,8 @@ First public release.
 - **Distribution** — goreleaser config; tagged releases publish prebuilt binaries for linux/darwin/windows × amd64/arm64.
 - **Docs** — top-level README with quickstart, runnable `examples/basic`, godoc examples, CONTRIBUTING.
 
-[Unreleased]: https://github.com/AyoubTadlaoui/GoLogX/compare/v0.1.10...HEAD
+[Unreleased]: https://github.com/AyoubTadlaoui/GoLogX/compare/v0.1.11...HEAD
+[0.1.11]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.11
 [0.1.10]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.10
 [0.1.9]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.9
 [0.1.8]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.8

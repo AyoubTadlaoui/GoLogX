@@ -14,11 +14,12 @@
 `logx -f app.json` tailing a live JSON stream:
 
 <!--
-  We embed the animation as both <video> (MP4, plays reliably in every
-  browser including Safari with Reduce-Motion enabled) and an <a> link
-  to the GIF (for markdown renderers that don't honor <video>).
+  Embed as <video> (MP4, plays reliably in every browser including Safari
+  with Reduce-Motion enabled) with the GIF as a fallback link.
+  Absolute raw URL is required: GitHub's README sanitizer rewrites
+  relative paths only inside <img> and <a>, not inside <video src>.
 -->
-<video src="docs/screenshots/follow.mp4" controls loop muted playsinline width="100%">
+<video src="https://github.com/AyoubTadlaoui/GoLogX/raw/main/docs/screenshots/follow.mp4" controls loop muted playsinline width="100%">
   Your browser does not support inline video.
   See the <a href="docs/screenshots/follow.gif">animated GIF</a> instead.
 </video>
