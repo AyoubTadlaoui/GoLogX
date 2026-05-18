@@ -5,6 +5,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 ## [Unreleased]
 
+## [0.1.12] — 2026-05-18
+
+### Changed
+
+- README animation now embedded as an **animated WebP** image rather than a
+  `<video>` tag. GitHub's README HTML sanitizer strips `<video>` entirely
+  (only allows it when src points to a `user-attachments.githubusercontent.com`
+  URL, which is reserved for files uploaded via PR/Issue drag-drop). WebP
+  renders through the standard `<img>` path the sanitizer leaves alone, plays
+  in every modern browser including Safari, and is smaller than the source
+  GIF. The GIF and MP4 copies remain available as sub-links beneath the image.
+- `gen.sh` adds `gif2webp` to its requirements (`brew install webp`). It now
+  produces `follow.webp` as the README-embedded artifact.
+
+### Fixed
+
+- The animation player is **actually visible** in the rendered README — v0.1.9
+  through v0.1.11 left a blank gap between the hero shot and the theme
+  attribution because the `<video>` element was being stripped.
+
 ## [0.1.11] — 2026-05-18
 
 ### Fixed
@@ -280,7 +300,8 @@ First public release.
 - **Distribution** — goreleaser config; tagged releases publish prebuilt binaries for linux/darwin/windows × amd64/arm64.
 - **Docs** — top-level README with quickstart, runnable `examples/basic`, godoc examples, CONTRIBUTING.
 
-[Unreleased]: https://github.com/AyoubTadlaoui/GoLogX/compare/v0.1.11...HEAD
+[Unreleased]: https://github.com/AyoubTadlaoui/GoLogX/compare/v0.1.12...HEAD
+[0.1.12]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.12
 [0.1.11]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.11
 [0.1.10]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.10
 [0.1.9]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.9

@@ -14,15 +14,14 @@
 `logx -f app.json` tailing a live JSON stream:
 
 <!--
-  Embed as <video> (MP4, plays reliably in every browser including Safari
-  with Reduce-Motion enabled) with the GIF as a fallback link.
-  Absolute raw URL is required: GitHub's README sanitizer rewrites
-  relative paths only inside <img> and <a>, not inside <video src>.
+  Animated WebP renders as an <img> tag, which GitHub's README sanitizer
+  passes through cleanly (it strips <video>). WebP plays in every modern
+  browser including Safari. The MP4 and GIF copies are kept alongside
+  for downloads (links below the image).
 -->
-<video src="https://github.com/AyoubTadlaoui/GoLogX/raw/main/docs/screenshots/follow.mp4" controls loop muted playsinline width="100%">
-  Your browser does not support inline video.
-  See the <a href="docs/screenshots/follow.gif">animated GIF</a> instead.
-</video>
+![logx follow mode — atlas-ragnarok theme](docs/screenshots/follow.webp)
+
+<sub>Also available as [GIF](docs/screenshots/follow.gif) or [MP4](docs/screenshots/follow.mp4).</sub>
 
 > Theme: [atlas-ragnarok](https://github.com/AyoubTadlaoui/atlas-ragnarok).
 > Regenerate the screenshots and the MP4 with `sh docs/screenshots/gen.sh`
