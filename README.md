@@ -21,15 +21,7 @@
 -->
 ![logx follow mode — atlas-ragnarok theme](docs/screenshots/follow.webp)
 
-<sub>Also available as [GIF](docs/screenshots/follow.gif) or [MP4](docs/screenshots/follow.mp4).</sub>
-
-> Theme: [atlas-ragnarok](https://github.com/AyoubTadlaoui/atlas-ragnarok).
-> The storm-fire glow is pixel-exact to the live GLSL shader —
-> `docs/screenshots/_shader.py` reimplements the shader in NumPy
-> (same colors, same smoothsteps, same luminance mask) and applies it
-> to every captured frame. Text never gets tinted; backgrounds carry
-> the glow. Regenerate with `sh docs/screenshots/gen.sh` (needs `vhs`,
-> `ffmpeg`, `webp`, `pillow`, `numpy`).
+<sub>Also available as [GIF](docs/screenshots/follow.gif) or [MP4](docs/screenshots/follow.mp4). Theme: [atlas-ragnarok](https://github.com/AyoubTadlaoui/atlas-ragnarok).</sub>
 
 ---
 
