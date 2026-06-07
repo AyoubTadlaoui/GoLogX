@@ -290,8 +290,9 @@ release:
   header: |
     ## GoLogX {{ .Tag }}
 
-    A small, fast, zero-dependency toolkit on top of Go's standard `log/slog`,
-    plus the `logx` CLI for pretty-printing JSON logs from any pipeline.
+    Tamper-evident logging for Go: an append-only, hash-chained, optionally
+    signed `log/slog` handler that `logx verify` can check, plus the everyday
+    pretty-print, JSON, rotation, and fan-out. Zero external dependencies.
   footer: |
     ---
 
