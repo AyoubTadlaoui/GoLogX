@@ -1,7 +1,6 @@
 # GoLogX
 
-> A small, fast, zero-dependency toolkit on top of Go's standard `log/slog`.
-> Pretty colored output for humans, JSON for machines, file rotation, fan-out, and a companion CLI to pretty-print JSON logs from any pipeline.
+> Tamper-evident logging for Go. An append-only, hash-chained, optionally signed `log/slog` handler: if anyone edits, deletes, reorders, or forges a line, `logx verify` catches it. Plus the everyday slog niceties, colored output, JSON, rotation, fan-out, and a CLI. Zero dependencies, because the code that proves your logs are real should not have a supply chain of its own.
 
 [![CI](https://github.com/AyoubTadlaoui/GoLogX/actions/workflows/ci.yml/badge.svg)](https://github.com/AyoubTadlaoui/GoLogX/actions/workflows/ci.yml)
 [![Release](https://github.com/AyoubTadlaoui/GoLogX/actions/workflows/release.yml/badge.svg)](https://github.com/AyoubTadlaoui/GoLogX/actions/workflows/release.yml)
@@ -9,32 +8,23 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/AyoubTadlaoui/GoLogX)](https://goreportcard.com/report/github.com/AyoubTadlaoui/GoLogX)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-![logx pretty output](docs/screenshots/hero.png)
-
-`logx -f app.json` tailing a live JSON stream:
-
-<!--
-  Animated WebP renders as an <img> tag, which GitHub's README sanitizer
-  passes through cleanly (it strips <video>). WebP plays in every modern
-  browser including Safari. The MP4 and GIF copies are kept alongside
-  for downloads (links below the image).
--->
-![logx follow mode — atlas-ragnarok theme](docs/screenshots/follow.webp)
-
-<sub>Also available as [GIF](docs/screenshots/follow.gif) or [MP4](docs/screenshots/follow.mp4). Theme: [atlas-ragnarok](https://github.com/AyoubTadlaoui/atlas-ragnarok).</sub>
-
 ---
 
 ## Why
 
-`log/slog` is the right default in modern Go. But out of the box it ships only `TextHandler` and `JSONHandler`. For real use you often want:
+Most logs are advisory. If something goes wrong and someone with write access wants the record to say something else, nothing stops them. For an audit trail, the kind you keep for a security review, a compliance ask, or to know what an autonomous agent actually did, that is not good enough. You want a log where any change after the fact is detectable.
 
-- a **colored, human-readable** handler in development
-- a **single record fanning out** to several sinks (pretty to stderr + JSON to file)
-- **size-based file rotation** without pulling in a third-party dependency
-- a **CLI** that pretty-prints JSON logs from any pipeline so you don't have to squint at machine output
+GoLogX gives you that as an ordinary `slog.Handler`:
 
-GoLogX is those four things. Nothing more. Zero external dependencies.
+- Every record becomes an entry in a **hash chain**. Each entry's SHA-256 covers the one before it, so editing, deleting, reordering, or injecting a line breaks the chain at that exact point.
+- With an **Ed25519 key** the entries are also signed, so they cannot be re-forged into a clean-looking chain by anyone who does not hold the private key.
+- You read a log back offline with **`logx verify`**, which tells you whether it is intact and, if not, the first entry that was touched.
+
+And it is still a good everyday logger: pretty colored output for humans, JSON for machines, size-based rotation, fan-out to several sinks, and a CLI that pretty-prints JSON logs from any pipeline. Built on the standard library, with **zero external dependencies**.
+
+### A note on where this fits
+
+I also build [npmguard](https://github.com/AyoubTadlaoui/npmguard), a pre-install gate that decides whether an npm package is safe before an AI agent installs it. GoLogX is the other half of that story: npmguard decides what an agent is allowed to do, GoLogX keeps the tamper-evident record of what it then did. Together you get a decision and a proof, and neither one trusts the host it runs on more than it has to.
 
 ---
 
@@ -43,12 +33,10 @@ GoLogX is those four things. Nothing more. Zero external dependencies.
 ### As a library
 
 ```bash
-go get github.com/AyoubTadlaoui/GoLogX/logx@latest
+go get github.com/AyoubTadlaoui/GoLogX@latest
 ```
 
 ### As a CLI
-
-Pick whichever fits your machine:
 
 ```bash
 # Homebrew (macOS + Linux)
@@ -58,40 +46,37 @@ brew install AyoubTadlaoui/tap/logx
 scoop bucket add atlas https://github.com/AyoubTadlaoui/scoop-bucket
 scoop install logx
 
-# WinGet (Windows, once Microsoft accepts the submission)
-winget install AyoubTadlaoui.logx
-
 # Arch Linux (via AUR)
 yay -S logx-bin     # or: paru -S logx-bin
 
 # Nix / NixOS
-nix run github:AyoubTadlaoui/GoLogX            # one-shot
-nix profile install github:AyoubTadlaoui/GoLogX # persistent
+nix run github:AyoubTadlaoui/GoLogX
 
 # Universal install script (Linux + macOS, amd64 + arm64) — verifies SHA256
 curl -fsSL https://raw.githubusercontent.com/AyoubTadlaoui/GoLogX/main/install.sh | sh
 
-# Debian / Ubuntu — pick the .deb from the releases page
-sudo dpkg -i logx_0.1.6_linux_amd64.deb
-
-# RHEL / Fedora / SUSE — pick the .rpm from the releases page
-sudo rpm -i logx-0.1.6-1.x86_64.rpm
-
-# Docker (linux/amd64, linux/arm64)
+# Docker
 docker run --rm -i ghcr.io/ayoubtadlaoui/logx:latest < app.json
 
 # Go install (any OS with Go ≥ 1.22)
 go install github.com/AyoubTadlaoui/GoLogX/cmd/logx@latest
-
-# Prebuilt binary
-# https://github.com/AyoubTadlaoui/GoLogX/releases
 ```
 
-Library use requires Go ≥ 1.22. See [`DISTRIBUTION.md`](DISTRIBUTION.md) for the full channel matrix and maintainer notes.
+The full channel matrix (WinGet, deb, rpm, prebuilt binaries) is on the [Releases](https://github.com/AyoubTadlaoui/GoLogX/releases) page. Library use requires Go ≥ 1.22.
 
 ---
 
-## Quickstart — library
+## Quickstart — tamper-evident audit log
+
+Make a signing key once:
+
+```bash
+logx keygen -out audit
+# wrote audit.key (private key — keep it secret, off the logging host)
+# wrote audit.pub (public key — share it with whoever verifies the log)
+```
+
+Write a signed, hash-chained log from your program:
 
 ```go
 package main
@@ -100,88 +85,140 @@ import (
     "log/slog"
     "os"
 
-    "github.com/AyoubTadlaoui/GoLogX/logx"
+    "github.com/AyoubTadlaoui/GoLogX/audit"
 )
 
 func main() {
-    log := logx.New(logx.Options{
-        Level:  logx.EnvLevel(slog.LevelInfo), // honors $LOG_LEVEL
-        Format: logx.FormatPretty,
-        Output: os.Stderr,
-    })
+    // Load the private key produced by `logx keygen`.
+    keyPEM, _ := os.ReadFile("audit.key")
+    priv, _ := audit.ParsePrivateKeyPEM(keyPEM)
 
-    log.Info("server up", "port", 8080, "env", "prod")
-    log.Warn("slow query", "ms", 230, "table", "users")
-    log.Error("upstream", "err", "timeout", "retries", 3)
+    f, _ := os.OpenFile("agent-audit.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0o600)
+    defer f.Close()
+
+    h, _ := audit.NewHandler(f, &audit.Options{Signer: priv})
+    log := slog.New(h)
+
+    log.Info("npm install approved", "package", "left-pad", "verdict", "clean")
+    log.Warn("npm install blocked", "package", "loadsh", "reason", "typosquat")
+    log.Info("command executed", "cmd", "node build.js", "exit", 0)
 }
+```
+
+Later, on any machine that has only the **public** key, check it:
+
+```bash
+logx verify -pubkey audit.pub agent-audit.log
+# OK   agent-audit.log — 3 entries intact (chain + signatures)
+```
+
+If someone edits a single byte, even a length-preserving one, verification fails at the exact entry and the exit code is `1`:
+
+```bash
+logx verify -pubkey audit.pub agent-audit.log
+# FAIL agent-audit.log — tampering detected at entry 1: entry 1 was modified: recomputed hash does not match
+```
+
+A complete runnable version is in [`examples/audit`](examples/audit) (`go run ./examples/audit`).
+
+### Watch it live and keep the proof at the same time
+
+One record can fan out to a pretty handler you read on screen and a signed audit handler on disk:
+
+```go
+chain, _ := audit.NewHandler(file, &audit.Options{Signer: priv})
+pretty := logx.NewHandler(logx.Options{Format: logx.FormatPretty})
+
+log := slog.New(logx.NewMultiHandler(pretty, chain))
+log.Info("hit", "path", "/healthz")
+```
+
+For a long-running service, `audit.OpenFile` reopens an existing log and continues the same chain across restarts instead of starting over.
+
+---
+
+## How verification works
+
+- Each entry is `{seq, time, prev, data, hash, sig}`, one JSON object per line.
+- `hash = SHA-256(seq, prev, time, data)`, with each field length-prefixed so no crafted input can shift the boundaries. `prev` is the hash of the previous entry; the first entry chains against a fixed genesis value.
+- `sig`, when present, is an Ed25519 signature over the entry's hash.
+- `logx verify` walks the file, recomputes each hash from the **verbatim** bytes it reads (no re-encoding, so there is nothing lenient to exploit), checks that every `prev` links to the entry before it, and, when you pass `-pubkey`, checks every signature. The first thing that does not line up is reported, with its entry number.
+
+## What it protects against, and what it does not
+
+Honesty matters more here than a long feature list, so this is exact.
+
+**Detected:**
+- Editing any field of any entry (message, an attribute, level, timestamp).
+- Deleting, reordering, or inserting lines.
+- With `-pubkey`: forging or re-signing entries without the private key.
+
+**Not detected on its own, by design:**
+- **Dropping entries from the very end of the file.** The surviving prefix is still a valid chain. If end-truncation is in your threat model, record the head hash and entry count somewhere the writer cannot reach (a second host, an object store with retention) and compare.
+- **A full rewrite of an unsigned log.** Without a signature, anyone holding the whole file can recompute every hash. This is exactly what signing prevents, so sign the log and keep the private key off the host that writes it. Hand only the public key to whoever verifies.
+
+The package depends on nothing outside the standard library (`crypto/sha256`, `crypto/ed25519`, `crypto/rand`, `encoding/pem`). The thing that proves your logs were not tampered with carries no third-party code in its own trust path.
+
+---
+
+## Quickstart — everyday logging
+
+GoLogX is still the small slog toolkit it started as.
+
+```go
+log := logx.New(logx.Options{
+    Level:  logx.EnvLevel(slog.LevelInfo), // honors $LOG_LEVEL
+    Format: logx.FormatPretty,
+    Output: os.Stderr,
+})
+
+log.Info("server up", "port", 8080, "env", "prod")
+log.Warn("slow query", "ms", 230, "table", "users")
 ```
 
 ```text
 21:10:27.036 INF server up port=8080 env=prod
 21:10:27.120 WRN slow query ms=230 table=users
-21:10:27.120 ERR upstream err=timeout retries=3
 ```
 
-### Pretty to stderr + JSON to a rotating file
+Pretty to stderr plus JSON to a rotating file, both seeing the same record:
 
 ```go
-rotator := &logx.RotatingWriter{
-    Path:       "app.log",
-    MaxSize:    1 << 20, // 1 MiB
-    MaxBackups: 3,
-}
+rotator := &logx.RotatingWriter{Path: "app.log", MaxSize: 1 << 20, MaxBackups: 3}
 defer rotator.Close()
 
 multi := logx.NewMultiHandler(
     logx.NewPrettyHandler(os.Stderr, nil),
-    slog.NewJSONHandler(rotator, &slog.HandlerOptions{
-        Level:     slog.LevelInfo,
-        AddSource: true,
-    }),
+    slog.NewJSONHandler(rotator, &slog.HandlerOptions{Level: slog.LevelInfo}),
 )
-
 log := slog.New(multi).With("service", "api")
-log.Info("hit", "path", "/healthz")
 ```
-
-Both sinks see the same record. A complete runnable version lives in [`examples/basic`](examples/basic).
 
 ---
 
-## Quickstart — CLI
+## CLI
 
-The `logx` binary reads JSON `slog` lines (from stdin or a file) and pretty-prints them.
+The `logx` binary pretty-prints JSON `slog` logs, and verifies audit logs.
 
 ```bash
-# pipe a Go service's stderr
+# pretty-print a JSON log stream
 myapp 2>&1 | logx
-
-# read from a file
-logx app.log
-
-# tail follow
-logx -f /var/log/app.json
-
-# filter
 logx -level=warn -grep=timeout app.log
+logx -f /var/log/app.json          # tail follow
 
-# no colors (for piping into a pager)
-logx -no-color app.log | less
+# audit
+logx keygen -out audit             # make a signing keypair
+logx verify -pubkey audit.pub a.log   # check integrity + signatures
+logx verify a.log                  # chain-only check, no key
 ```
 
-Lines that don't parse as JSON are passed through unchanged, so panic stacktraces and plain-text logs don't get swallowed.
+| Command | Purpose |
+|---|---|
+| `logx [flags] [file ...]` | Pretty-print JSON slog logs (stdin or files) |
+| `logx verify [-pubkey k] [-quiet] file ...` | Check a hash-chained log. Exit `0` intact, `1` tampered, `2` unreadable |
+| `logx keygen [-out audit] [-force]` | Write an Ed25519 keypair (`<out>.key`, `<out>.pub`) |
 
-All flags:
-
-| Flag | Default | Meaning |
-|---|---|---|
-| `-level` | `debug` | Minimum level to show (`debug`/`info`/`warn`/`error`) |
-| `-grep` | _empty_ | Only show lines containing this substring (applied to the raw input line, so it matches JSON-encoded fields and pass-through text alike) |
-| `-f`   | `false` | Follow the file like `tail -f` (single file only) |
-| `-no-color` | `false` | Disable ANSI color escapes |
-| `-source` | `false` | Show `file:line` if `source` is present in the record |
-| `-time`   | `15:04:05.000` | Go time format for the timestamp column |
-| `-version` | — | Print version and exit |
+Pretty-print flags (`-level`, `-grep`, `-f`, `-no-color`, `-source`, `-time`, `-version`) are unchanged; lines that are not JSON are passed through untouched.
 
 ---
 
@@ -189,15 +226,12 @@ All flags:
 
 | Symbol | What it is |
 |---|---|
-| [`logx.New(opts)`](https://pkg.go.dev/github.com/AyoubTadlaoui/GoLogX/logx#New)                 | Build a `*slog.Logger` from `Options` |
-| [`logx.NewHandler(opts)`](https://pkg.go.dev/github.com/AyoubTadlaoui/GoLogX/logx#NewHandler)   | Just the handler, for composition |
-| [`logx.Default()` / `logx.Dev()`](https://pkg.go.dev/github.com/AyoubTadlaoui/GoLogX/logx#Default) | Opinionated production / development loggers |
-| [`logx.NewPrettyHandler(w, opts)`](https://pkg.go.dev/github.com/AyoubTadlaoui/GoLogX/logx#NewPrettyHandler) | Colored, human-readable `slog.Handler` |
-| [`logx.NewMultiHandler(h...)`](https://pkg.go.dev/github.com/AyoubTadlaoui/GoLogX/logx#NewMultiHandler)      | Fan one record out to N handlers |
-| [`logx.RotatingWriter`](https://pkg.go.dev/github.com/AyoubTadlaoui/GoLogX/logx#RotatingWriter) | Size-based `io.WriteCloser` for slog (or any writer) |
-| [`logx.LevelFromString(s)` / `logx.EnvLevel(fallback)`](https://pkg.go.dev/github.com/AyoubTadlaoui/GoLogX/logx#LevelFromString) | Wire log level via env / flag |
-
-Full docs and examples: **[pkg.go.dev/github.com/AyoubTadlaoui/GoLogX/logx](https://pkg.go.dev/github.com/AyoubTadlaoui/GoLogX/logx)**.
+| [`audit.NewHandler(w, opts)`](https://pkg.go.dev/github.com/AyoubTadlaoui/GoLogX/audit#NewHandler) | A hash-chained, optionally signed `slog.Handler` |
+| [`audit.OpenFile(path, opts)`](https://pkg.go.dev/github.com/AyoubTadlaoui/GoLogX/audit#OpenFile) | Same, resuming the chain already in a file |
+| [`audit.Verify(r, pub)` / `audit.VerifyFile(path, pub)`](https://pkg.go.dev/github.com/AyoubTadlaoui/GoLogX/audit#Verify) | Walk a log and report the first broken entry |
+| [`audit.GenerateKey()`](https://pkg.go.dev/github.com/AyoubTadlaoui/GoLogX/audit#GenerateKey) and the `…KeyPEM` helpers | Make and load Ed25519 keys |
+| [`logx.New(opts)` / `logx.NewHandler(opts)`](https://pkg.go.dev/github.com/AyoubTadlaoui/GoLogX/logx#New) | Build a logger / handler from `Options` |
+| [`logx.NewPrettyHandler`](https://pkg.go.dev/github.com/AyoubTadlaoui/GoLogX/logx#NewPrettyHandler), [`logx.NewMultiHandler`](https://pkg.go.dev/github.com/AyoubTadlaoui/GoLogX/logx#NewMultiHandler), [`logx.RotatingWriter`](https://pkg.go.dev/github.com/AyoubTadlaoui/GoLogX/logx#RotatingWriter) | Pretty handler, fan-out, rotation |
 
 ---
 
@@ -207,57 +241,28 @@ Microbenchmarks on `darwin/arm64`, single record with three attributes, output d
 
 ```text
 BenchmarkPretty-8        597.8 ns/op    16 B/op    1 allocs/op
-BenchmarkPrettyColor-8   467.0 ns/op    16 B/op    1 allocs/op
-BenchmarkStdlibText-8    592.2 ns/op     0 B/op    0 allocs/op
 BenchmarkStdlibJSON-8    579.1 ns/op     0 B/op    0 allocs/op
 BenchmarkMulti-8         829.7 ns/op    16 B/op    1 allocs/op
 ```
 
-PrettyHandler is **on par with stdlib `TextHandler` / `JSONHandler`** in throughput, paying one small allocation per record for buffer pooling. Reproduce:
-
-```bash
-make bench
-```
+The pretty handler is on par with stdlib `TextHandler` / `JSONHandler`. The audit handler does one SHA-256 (and one Ed25519 sign, if enabled) per record; run `make bench` to measure it on your hardware.
 
 ---
 
 ## Common tasks
 
 ```bash
-make help        # list everything
-make build       # build the cmd/logx binary into ./bin/logx
 make test        # go test ./...
 make test-race   # go test -race ./...
-make bench       # microbenchmarks vs stdlib slog
-make cover       # coverage profile + HTML
-make lint        # golangci-lint run ./...
-make snapshot    # build local snapshot archives with goreleaser (needs goreleaser)
+make bench       # microbenchmarks
+make check       # gofmt + vet + race tests
 ```
-
----
-
-## Versioning & releases
-
-GoLogX follows [Semantic Versioning](https://semver.org/). While the project is `0.x`:
-
-- The CLI is treated as stable for end users — flag names and exit codes won't change without a major bump.
-- The library API may make minor changes between `0.x` releases. Anything breaking is called out in [CHANGELOG.md](CHANGELOG.md).
-
-Tagged releases publish prebuilt CLI binaries to the [Releases](https://github.com/AyoubTadlaoui/GoLogX/releases) page (linux/macOS/windows × amd64/arm64) via [goreleaser](https://goreleaser.com/).
 
 ---
 
 ## Contributing
 
-PRs and issues welcome. The full bar is in [CONTRIBUTING.md](CONTRIBUTING.md). The short version:
-
-```bash
-make check       # gofmt + vet + race tests
-```
-
-Open the PR once that's clean.
-
----
+PRs and issues welcome. The bar is in [CONTRIBUTING.md](CONTRIBUTING.md). Run `make check` and open the PR once it is clean.
 
 ## License
 
