@@ -16,10 +16,6 @@ const domain = "gologx-audit-v1"
 // hashLen is the SHA-256 digest length in bytes.
 const hashLen = sha256.Size
 
-// genesisHex is the "previous hash" of the first entry in a chain: 32 zero
-// bytes. It anchors the chain so seq 0 is hashed against a fixed, known value.
-var genesisHex = hex.EncodeToString(make([]byte, hashLen))
-
 // Entry is one record in the append-only audit log, serialized as a single
 // JSON object per line (JSONL). Every field except Hash and Sig is folded into
 // Hash; Sig (when present) covers Hash. So any change to seq, prev, time, or
