@@ -168,7 +168,7 @@ gh api -X PATCH /user/packages/container/logx -f visibility=public
 After cutting a tag, run through this short checklist:
 
 ```bash
-TAG=v0.1.2   # the tag you just pushed
+TAG=v0.2.0   # the tag you just pushed
 
 # 1. Library
 go install github.com/AyoubTadlaoui/GoLogX/cmd/logx@$TAG && logx -version  # should print $TAG (without the leading 'v' in some renderings, that's OK)

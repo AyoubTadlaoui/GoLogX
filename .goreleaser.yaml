@@ -49,8 +49,8 @@ checksum:
 # Zero new infra: they're produced by goreleaser's nfpms pipe and attached
 # to the GitHub Release as additional assets. Install:
 #
-#   dpkg -i logx_0.1.5_amd64.deb        # Debian/Ubuntu
-#   rpm -i logx-0.1.5-1.x86_64.rpm      # RHEL/Fedora/SUSE
+#   dpkg -i logx_0.2.0_amd64.deb        # Debian/Ubuntu
+#   rpm -i logx-0.2.0-1.x86_64.rpm      # RHEL/Fedora/SUSE
 nfpms:
   - id: logx
     package_name: logx

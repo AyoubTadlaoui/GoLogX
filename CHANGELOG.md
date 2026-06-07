@@ -5,6 +5,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-06-07
+
+### Added
+
+- **`audit` package**: a tamper-evident `log/slog` handler. `audit.NewHandler(w, opts)` writes each record as a JSON line that carries the SHA-256 hash of the entry before it, so the whole file is an append-only hash chain. Any edit, deletion, reordering, or forged line breaks the chain and is detectable after the fact. Pass a `Signer` (an Ed25519 private key) and every entry is signed too, so an attacker who can rewrite the file still cannot produce entries that verify without the key.
+  - `audit.OpenFile(path, opts)` reopens an existing log and continues the same chain across process restarts instead of starting a new one.
+  - `audit.Verify(r, pub)` / `audit.VerifyFile(path, pub)` walk a log offline, recompute each hash from the verbatim bytes on disk, check that every `prev` links to the entry before it, and (when given a public key) check every signature. The first entry that does not line up is reported with its number.
+  - `audit.GenerateKey()` and the PEM key helpers make and load Ed25519 keys.
+- **`logx verify`**: check a hash-chained audit log from the command line. Exit `0` when intact, `1` when tampering is found (naming the first bad entry), `2` when the file cannot be read. Pass `-pubkey k.pub` to also verify signatures; without a key it does a chain-only check.
+- **`logx keygen`**: write an Ed25519 signing keypair (`<out>.key` private, `<out>.pub` public; default prefix `audit`, `-force` to overwrite).
+
+### Unchanged
+
+- The `verify` and `keygen` verbs dispatch only when they are the first argument, so the default `logx [flags] [file ...]` pretty-print behavior, every existing flag, and `logx -version` are untouched.
+- Still zero external dependencies. The audit package uses only the standard library (`crypto/ed25519`, `crypto/sha256`, `encoding/pem`, `encoding/json`); `go.mod` gains no `require` lines.
+
 ## [0.1.14] — 2026-05-18
 
 ### Fixed
@@ -349,7 +365,8 @@ First public release.
 - **Distribution** — goreleaser config; tagged releases publish prebuilt binaries for linux/darwin/windows × amd64/arm64.
 - **Docs** — top-level README with quickstart, runnable `examples/basic`, godoc examples, CONTRIBUTING.
 
-[Unreleased]: https://github.com/AyoubTadlaoui/GoLogX/compare/v0.1.14...HEAD
+[Unreleased]: https://github.com/AyoubTadlaoui/GoLogX/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.2.0
 [0.1.14]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.14
 [0.1.13]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.13
 [0.1.12]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.12

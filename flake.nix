@@ -14,7 +14,7 @@
         # Single source of truth for the build's reported version.
         # Keep in sync with the latest git tag — goreleaser bakes this same
         # value into the prebuilt binaries via -ldflags.
-        version = "0.1.6";
+        version = "0.2.0";
       in {
         packages = rec {
           logx = pkgs.buildGoModule {

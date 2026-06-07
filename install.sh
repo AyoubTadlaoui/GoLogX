@@ -5,7 +5,7 @@
 #   curl -sSL https://raw.githubusercontent.com/AyoubTadlaoui/GoLogX/main/install.sh | sh
 #
 # Env knobs:
-#   VERSION       Tag to install (default: latest). Example: VERSION=v0.1.5
+#   VERSION       Tag to install (default: latest). Example: VERSION=v0.2.0
 #   INSTALL_DIR   Where to drop the binary (default: /usr/local/bin if writable,
 #                 else $HOME/.local/bin). Example: INSTALL_DIR=$HOME/bin
 #
