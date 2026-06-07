@@ -64,6 +64,10 @@ Usage:
   logx [flags] [file ...]
   myapp 2>&1 | logx [flags]
 
+Subcommands:
+  logx verify [-pubkey k.pub] file ...   check a hash-chained audit log's integrity
+  logx keygen [-out audit]               generate an Ed25519 signing keypair
+
 Flags:
 `, resolvedVersion())
 		fs.PrintDefaults()
@@ -110,6 +114,17 @@ var errVersionPrinted = errors.New("version printed")
 
 // run is the testable entry point. It returns the process exit code.
 func run(stdin io.Reader, stdout, stderr io.Writer, argv []string) int {
+	// Subcommands are dispatched only when they are the first argument, so the
+	// default `logx [flags] [file ...]` pretty-print behavior is unchanged.
+	if len(argv) > 0 {
+		switch argv[0] {
+		case "verify":
+			return verifyCmd(stdout, stderr, argv[1:])
+		case "keygen":
+			return keygenCmd(stdout, stderr, argv[1:])
+		}
+	}
+
 	cfg, err := parseFlags(argv, stdout, stderr)
 	if err != nil {
 		if errors.Is(err, errVersionPrinted) {
