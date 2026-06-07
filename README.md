@@ -1,6 +1,6 @@
 # GoLogX
 
-> Tamper-evident logging for Go. An append-only, hash-chained, optionally signed `log/slog` handler: if anyone edits, deletes, reorders, or forges a line, `logx verify` catches it. Plus the everyday slog niceties, colored output, JSON, rotation, fan-out, and a CLI. Zero dependencies, because the code that proves your logs are real should not have a supply chain of its own.
+> Tamper-evident logging for Go. An append-only, hash-chained, optionally signed `log/slog` handler: if anyone edits, deletes, reorders, or forges a line, `logx verify` catches it. Plus the everyday slog niceties, colored output, JSON, rotation, fan-out, and a CLI. No third-party dependencies, the integrity code is built on the Go standard library alone.
 
 [![CI](https://github.com/AyoubTadlaoui/GoLogX/actions/workflows/ci.yml/badge.svg)](https://github.com/AyoubTadlaoui/GoLogX/actions/workflows/ci.yml)
 [![Release](https://github.com/AyoubTadlaoui/GoLogX/actions/workflows/release.yml/badge.svg)](https://github.com/AyoubTadlaoui/GoLogX/actions/workflows/release.yml)
@@ -24,7 +24,7 @@ And it is still a good everyday logger: pretty colored output for humans, JSON f
 
 ### A note on where this fits
 
-I also build [npmguard](https://github.com/AyoubTadlaoui/npmguard), a pre-install gate that decides whether an npm package is safe before an AI agent installs it. GoLogX is the other half of that story: npmguard decides what an agent is allowed to do, GoLogX keeps the tamper-evident record of what it then did. Together you get a decision and a proof, and neither one trusts the host it runs on more than it has to.
+I also build [npmguard](https://github.com/AyoubTadlaoui/npmguard), a pre-install gate that decides whether an npm package is safe before an AI agent installs it. GoLogX is the complementary half: npmguard gates what an agent is allowed to install, GoLogX keeps a tamper-evident record of what it then did. They are two separate tools that cover complementary ends of the same problem, not wired together.
 
 ---
 
@@ -52,7 +52,7 @@ yay -S logx-bin     # or: paru -S logx-bin
 # Nix / NixOS
 nix run github:AyoubTadlaoui/GoLogX
 
-# Universal install script (Linux + macOS, amd64 + arm64) — verifies SHA256
+# Universal install script (Linux + macOS, amd64 + arm64), verifies SHA256
 curl -fsSL https://raw.githubusercontent.com/AyoubTadlaoui/GoLogX/main/install.sh | sh
 
 # Docker
@@ -66,14 +66,14 @@ The full channel matrix (WinGet, deb, rpm, prebuilt binaries) is on the [Release
 
 ---
 
-## Quickstart — tamper-evident audit log
+## Quickstart: tamper-evident audit log
 
 Make a signing key once:
 
 ```bash
 logx keygen -out audit
-# wrote audit.key (private key — keep it secret, off the logging host)
-# wrote audit.pub (public key — share it with whoever verifies the log)
+# wrote audit.key (private key, keep it secret and off the logging host)
+# wrote audit.pub (public key, share it with whoever verifies the log)
 ```
 
 Write a signed, hash-chained log from your program:
@@ -109,14 +109,14 @@ Later, on any machine that has only the **public** key, check it:
 
 ```bash
 logx verify -pubkey audit.pub agent-audit.log
-# OK   agent-audit.log — 3 entries intact (chain + signatures)
+# OK   agent-audit.log, 3 entries intact (chain + signatures)
 ```
 
 If someone edits a single byte, even a length-preserving one, verification fails at the exact entry and the exit code is `1`:
 
 ```bash
 logx verify -pubkey audit.pub agent-audit.log
-# FAIL agent-audit.log — tampering detected at entry 1: entry 1 was modified: recomputed hash does not match
+# FAIL agent-audit.log, tampering detected at entry 1: entry 1 was modified: recomputed hash does not match
 ```
 
 A complete runnable version is in [`examples/audit`](examples/audit) (`go run ./examples/audit`).
@@ -161,7 +161,7 @@ The package depends on nothing outside the standard library (`crypto/sha256`, `c
 
 ---
 
-## Quickstart — everyday logging
+## Quickstart: everyday logging
 
 GoLogX is still the small slog toolkit it started as.
 
@@ -266,12 +266,12 @@ PRs and issues welcome. The bar is in [CONTRIBUTING.md](CONTRIBUTING.md). Run `m
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT, see [LICENSE](LICENSE).
 
 ---
 
 ### About the author
 
-**Ayoub Tadlaoui** — *Atlas Kaisar* — a problem-solver from Morocco, building software since 2016.
+**Ayoub Tadlaoui**, *Atlas Kaisar*, a problem-solver from Morocco, building software since 2016.
 
 > "High performance knows no part-time commitment."

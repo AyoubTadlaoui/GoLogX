@@ -58,7 +58,7 @@ func parseFlags(argv []string, stdout, stderr io.Writer) (*config, error) {
 	// and what `tool 2>/dev/null` users expect when they're suppressing chatter.
 	fs.SetOutput(stderr)
 	fs.Usage = func() {
-		fmt.Fprintf(stderr, `logx %s — pretty-print JSON slog logs
+		fmt.Fprintf(stderr, `logx %s: pretty-print JSON slog logs
 
 Usage:
   logx [flags] [file ...]

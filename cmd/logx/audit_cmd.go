@@ -19,7 +19,7 @@ func keygenCmd(stdout, stderr io.Writer, argv []string) int {
 	out := fs.String("out", "audit", "base name for the key files (writes <out>.key and <out>.pub)")
 	force := fs.Bool("force", false, "overwrite existing key files")
 	fs.Usage = func() {
-		fmt.Fprintf(stderr, `logx keygen — generate an Ed25519 keypair for signing audit logs
+		fmt.Fprintf(stderr, `logx keygen: generate an Ed25519 keypair for signing audit logs
 
 Usage:
   logx keygen [-out audit] [-force]
@@ -69,8 +69,8 @@ Flags:
 		fmt.Fprintln(stderr, "logx:", err)
 		return 1
 	}
-	fmt.Fprintf(stdout, "wrote %s (private key — keep it secret, off the logging host)\n", privPath)
-	fmt.Fprintf(stdout, "wrote %s (public key — share it with whoever verifies the log)\n", pubPath)
+	fmt.Fprintf(stdout, "wrote %s (private key, keep it secret and off the logging host)\n", privPath)
+	fmt.Fprintf(stdout, "wrote %s (public key, share it with whoever verifies the log)\n", pubPath)
 	return 0
 }
 
@@ -85,7 +85,7 @@ func verifyCmd(stdout, stderr io.Writer, argv []string) int {
 	pubPath := fs.String("pubkey", "", "Ed25519 public key PEM; when set, every entry must carry a valid signature")
 	quiet := fs.Bool("quiet", false, "print nothing, rely on the exit code (0 ok, 1 tampered, 2 error)")
 	fs.Usage = func() {
-		fmt.Fprintf(stderr, `logx verify — check the integrity of a hash-chained audit log
+		fmt.Fprintf(stderr, `logx verify: check the integrity of a hash-chained audit log
 
 Usage:
   logx verify [-pubkey audit.pub] [-quiet] file ...
@@ -140,13 +140,13 @@ Flags:
 		}
 		if rep.OK {
 			if !*quiet {
-				fmt.Fprintf(stdout, "OK   %s — %d entries intact (%s)\n", f, rep.Entries, modeLabel(pub, rep))
+				fmt.Fprintf(stdout, "OK   %s, %d entries intact (%s)\n", f, rep.Entries, modeLabel(pub, rep))
 			}
 			continue
 		}
 		sawTamper = true
 		if !*quiet {
-			fmt.Fprintf(stdout, "FAIL %s — tampering detected at entry %d: %s\n", f, rep.BadSeq, rep.Reason)
+			fmt.Fprintf(stdout, "FAIL %s, tampering detected at entry %d: %s\n", f, rep.BadSeq, rep.Reason)
 		}
 	}
 

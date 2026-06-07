@@ -79,7 +79,7 @@ func demo() error {
 	}
 	fmt.Printf("verify after tamper:  ok=%v badSeq=%d\n  reason: %s\n", rep.OK, rep.BadSeq, rep.Reason)
 	if rep.OK {
-		return fmt.Errorf("tamper was NOT detected — this should never happen")
+		return fmt.Errorf("tamper was NOT detected, this should never happen")
 	}
 	fmt.Println("\nthe edit was caught at the exact entry. nothing left the chain unseen.")
 	return nil

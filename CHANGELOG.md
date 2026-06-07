@@ -5,6 +5,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-06-07
+
+### Changed
+
+- Punctuation cleanup in the CLI output, help text, and README. The `logx keygen` and `logx verify` lines now use commas and colons instead of dashes. No behavior or API change.
+
 ## [0.2.0] - 2026-06-07
 
 ### Added
@@ -365,7 +371,8 @@ First public release.
 - **Distribution** — goreleaser config; tagged releases publish prebuilt binaries for linux/darwin/windows × amd64/arm64.
 - **Docs** — top-level README with quickstart, runnable `examples/basic`, godoc examples, CONTRIBUTING.
 
-[Unreleased]: https://github.com/AyoubTadlaoui/GoLogX/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/AyoubTadlaoui/GoLogX/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.2.1
 [0.2.0]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.2.0
 [0.1.14]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.14
 [0.1.13]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.13
