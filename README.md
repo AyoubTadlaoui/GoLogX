@@ -3,6 +3,7 @@
 > Tamper-evident logging for Go. An append-only, hash-chained, optionally signed `log/slog` handler: if anyone edits, deletes, reorders, or forges a line, `logx verify` catches it. Plus the everyday slog niceties, colored output, JSON, rotation, fan-out, and a CLI. No third-party dependencies, the integrity code is built on the Go standard library alone.
 
 [![CI](https://github.com/AyoubTadlaoui/GoLogX/actions/workflows/ci.yml/badge.svg)](https://github.com/AyoubTadlaoui/GoLogX/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/AyoubTadlaoui/GoLogX/branch/main/graph/badge.svg)](https://codecov.io/gh/AyoubTadlaoui/GoLogX)
 [![Release](https://github.com/AyoubTadlaoui/GoLogX/actions/workflows/release.yml/badge.svg)](https://github.com/AyoubTadlaoui/GoLogX/actions/workflows/release.yml)
 [![Go Reference](https://pkg.go.dev/badge/github.com/AyoubTadlaoui/GoLogX/logx.svg)](https://pkg.go.dev/github.com/AyoubTadlaoui/GoLogX/logx)
 [![Go Report Card](https://goreportcard.com/badge/github.com/AyoubTadlaoui/GoLogX)](https://goreportcard.com/report/github.com/AyoubTadlaoui/GoLogX)

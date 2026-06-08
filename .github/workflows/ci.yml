@@ -37,7 +37,16 @@ jobs:
         run: go build ./...
 
       - name: Test (with race detector)
-        run: go test -race -count=1 ./...
+        run: go test -race -count=1 -coverprofile=coverage.txt -covermode=atomic ./...
+
+      - name: Upload coverage to Codecov
+        if: matrix.go-version == '1.23'
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./coverage.txt
+          fail_ci_if_error: false
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   lint:
     name: Lint
