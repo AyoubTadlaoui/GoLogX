@@ -5,6 +5,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 ## [Unreleased]
 
+## [0.2.2] - 2026-06-08
+
+### Changed
+
+- Corrected the repository, package, and registry descriptions so they describe what GoLogX actually is: a tamper-evident, hash-chained `slog` audit log for Go with offline verification. The old wording only mentioned the pretty-print CLI and left out the audit core added in 0.2.0. Updated across the Homebrew formula, Scoop manifest, AUR package, WinGet manifest, deb/rpm package metadata, Docker image labels, and the README. No functional or API change. This release exists to republish those descriptions to every distribution channel.
+
 ## [0.2.1] - 2026-06-07
 
 ### Changed
@@ -371,7 +377,8 @@ First public release.
 - **Distribution** — goreleaser config; tagged releases publish prebuilt binaries for linux/darwin/windows × amd64/arm64.
 - **Docs** — top-level README with quickstart, runnable `examples/basic`, godoc examples, CONTRIBUTING.
 
-[Unreleased]: https://github.com/AyoubTadlaoui/GoLogX/compare/v0.2.1...HEAD
+[Unreleased]: https://github.com/AyoubTadlaoui/GoLogX/compare/v0.2.2...HEAD
+[0.2.2]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.2.2
 [0.2.1]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.2.1
 [0.2.0]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.2.0
 [0.1.14]: https://github.com/AyoubTadlaoui/GoLogX/releases/tag/v0.1.14
