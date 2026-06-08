@@ -61,8 +61,8 @@ nfpms:
     homepage: https://github.com/AyoubTadlaoui/GoLogX
     maintainer: Ayoub Tadlaoui <atlas.kaisar@icloud.com>
     description: |-
-      logx — pretty-print JSON slog logs from stdin, files, or follow mode.
-      A small, zero-dependency companion CLI to the GoLogX Go library.
+      logx is the CLI for GoLogX, a tamper-evident, hash-chained slog audit log
+      for Go with offline verification. Zero-dependency companion to the library.
     license: MIT
     section: utils
     priority: optional
@@ -93,7 +93,7 @@ brews:
       token: '{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}'
     directory: Formula
     homepage: https://github.com/AyoubTadlaoui/GoLogX
-    description: Pretty-print JSON slog logs from stdin, files, or follow mode
+    description: Tamper-evident, hash-chained slog audit log for Go with offline verification
     license: MIT
     commit_author:
       name: Ayoub Tadlaoui
@@ -121,7 +121,7 @@ scoops:
       token: '{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}'
     directory: bucket
     homepage: https://github.com/AyoubTadlaoui/GoLogX
-    description: Pretty-print JSON slog logs from stdin, files, or follow mode
+    description: Tamper-evident, hash-chained slog audit log for Go with offline verification
     license: MIT
     commit_author:
       name: Ayoub Tadlaoui
@@ -148,7 +148,7 @@ scoops:
 aurs:
   - name: logx-bin
     homepage: https://github.com/AyoubTadlaoui/GoLogX
-    description: Pretty-print JSON slog logs from stdin, files, or follow mode
+    description: Tamper-evident, hash-chained slog audit log for Go with offline verification
     license: MIT
     maintainers:
       - 'Ayoub Tadlaoui <atlas.kaisar@icloud.com>'
@@ -191,15 +191,15 @@ winget:
     license: MIT
     license_url: https://github.com/AyoubTadlaoui/GoLogX/blob/main/LICENSE
     homepage: https://github.com/AyoubTadlaoui/GoLogX
-    short_description: Pretty-print JSON slog logs from stdin, files, or follow mode
+    short_description: Tamper-evident, hash-chained slog audit log for Go with offline verification
     description: |
-      logx is a small, zero-dependency CLI that consumes JSON slog records
-      (the standard log/slog format) and renders them as colored,
-      human-friendly lines. It supports stdin pipelines, file arguments,
-      tail-style follow mode, level filtering, and substring grep, and
-      passes through non-JSON lines unchanged so panics aren't swallowed.
+      logx is the CLI for GoLogX, a tamper-evident audit log for Go. It verifies
+      append-only, hash-chained, optionally Ed25519-signed slog files offline, so
+      edits, deletions, reorders, or forged lines are caught. The same binary also
+      pretty-prints JSON slog records as colored lines, with stdin pipelines, file
+      arguments, follow mode, level filtering, and grep. Zero dependencies.
     release_notes_url: 'https://github.com/AyoubTadlaoui/GoLogX/releases/tag/{{.Tag}}'
-    tags: [logging, slog, cli, devtools, json]
+    tags: [audit-log, tamper-evident, hash-chain, ed25519, slog, logging, cli]
     commit_author:
       name: Ayoub Tadlaoui
       email: atlas.kaisar@icloud.com
@@ -232,7 +232,7 @@ dockers:
       - '--pull'
       - '--platform=linux/amd64'
       - '--label=org.opencontainers.image.title={{ .ProjectName }}'
-      - '--label=org.opencontainers.image.description=Pretty-print JSON slog logs'
+      - '--label=org.opencontainers.image.description=Tamper-evident, hash-chained slog audit log for Go with offline verification'
       - '--label=org.opencontainers.image.url=https://github.com/AyoubTadlaoui/GoLogX'
       - '--label=org.opencontainers.image.source=https://github.com/AyoubTadlaoui/GoLogX'
       - '--label=org.opencontainers.image.version={{ .Version }}'
@@ -249,7 +249,7 @@ dockers:
       - '--pull'
       - '--platform=linux/arm64'
       - '--label=org.opencontainers.image.title={{ .ProjectName }}'
-      - '--label=org.opencontainers.image.description=Pretty-print JSON slog logs'
+      - '--label=org.opencontainers.image.description=Tamper-evident, hash-chained slog audit log for Go with offline verification'
       - '--label=org.opencontainers.image.url=https://github.com/AyoubTadlaoui/GoLogX'
       - '--label=org.opencontainers.image.source=https://github.com/AyoubTadlaoui/GoLogX'
       - '--label=org.opencontainers.image.version={{ .Version }}'

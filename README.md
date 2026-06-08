@@ -164,7 +164,7 @@ The package depends on nothing outside the standard library (`crypto/sha256`, `c
 
 ## Quickstart: everyday logging
 
-GoLogX is still the small slog toolkit it started as.
+The tamper-evident audit core is built on an ordinary `log/slog` handler, so GoLogX is also a complete everyday slog toolkit. Use it for plain logging and turn on the integrity guarantees when you need them.
 
 ```go
 log := logx.New(logx.Options{
