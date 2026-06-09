@@ -59,7 +59,7 @@ type rpcResponse struct {
 // from in, dispatches each, and writes responses to out, one compact JSON
 // object per line. Diagnostics go to logw. It returns a process exit code and
 // returns 0 on a clean stdin EOF (the client closing the stream).
-func run(in io.Reader, out io.Writer, logw io.Writer) int {
+func run(in io.Reader, out, logw io.Writer) int {
 	srv := &server{out: out, logw: logw}
 
 	reader := bufio.NewReaderSize(in, 64*1024)
