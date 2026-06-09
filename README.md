@@ -1,6 +1,4 @@
-<div align="center">
-  <img src="docs/logo.png" alt="GoLogX" width="120" />
-</div>
+
 
 # GoLogX
 
