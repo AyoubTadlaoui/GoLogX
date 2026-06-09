@@ -1,3 +1,7 @@
+<div align="center">
+  <img src="docs/logo.png" alt="GoLogX" width="120" />
+</div>
+
 # GoLogX
 
 > Tamper-evident logging for Go. An append-only, hash-chained, optionally signed `log/slog` handler: if anyone edits, deletes, reorders, or forges a line, `logx verify` catches it. Plus the everyday slog niceties, colored output, JSON, rotation, fan-out, and a CLI. No third-party dependencies, the integrity code is built on the Go standard library alone.
