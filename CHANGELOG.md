@@ -5,6 +5,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-06-09
+
+### Added
+
+- A zero-dependency MCP server (`cmd/logx-mcp`, binary `logx-mcp`) that exposes the audit core to AI coding agents over stdio: `verify_audit_log`, `append_audit_entry`, and `read_audit_log`. The Model Context Protocol is hand-rolled on the standard library alone (JSON-RPC 2.0 over stdin and stdout), so the agent integration keeps the same zero third-party dependency promise as the rest of GoLogX. Setup for Claude Code, Cursor, and Codex is in the README.
+
 ## [0.2.2] - 2026-06-08
 
 ### Changed
