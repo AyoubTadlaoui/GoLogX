@@ -23,10 +23,22 @@ builds:
     ldflags:
       - -s -w
       - -X main.version={{.Version}}
+  - id: logx-mcp
+    main: ./cmd/logx-mcp
+    binary: logx-mcp
+    env:
+      - CGO_ENABLED=0
+    goos: [linux, darwin, windows]
+    goarch: [amd64, arm64]
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w
+      - -X main.version={{.Version}}
 
 archives:
   - id: default
-    builds: [logx]
+    builds: [logx, logx-mcp]
     name_template: >-
       {{ .ProjectName }}_
       {{- .Version }}_

@@ -227,6 +227,63 @@ Pretty-print flags (`-level`, `-grep`, `-f`, `-no-color`, `-source`, `-time`, `-
 
 ---
 
+## MCP server for AI agents
+
+`logx-mcp` is a [Model Context Protocol](https://modelcontextprotocol.io) server that lets an AI agent keep and check a tamper-evident audit log of what it does. It speaks JSON-RPC 2.0 over stdio, the transport that Claude Code, Cursor, and Codex launch a server with, and exposes three tools wired to the audit core. It is the same zero-dependency code as the rest of GoLogX: standard library plus the local `audit` package, no MCP SDK.
+
+The idea is simple. An agent that takes actions on your behalf should leave a record you can trust later. `append_audit_entry` writes each step into a hash chain, optionally signed, and `verify_audit_log` proves afterward that nothing in that record was edited, deleted, or reordered.
+
+| Tool | What it does |
+|---|---|
+| `verify_audit_log` | Verify a chain's integrity. Returns intact, or the index and detail of the first entry that was edited, deleted, reordered, or forged. Pass `pubkey_path` to also check Ed25519 signatures. |
+| `append_audit_entry` | Append one tamper-evident entry (`message`, optional `level`, `attrs`, `privkey_path`) to a log, creating it if needed and resuming the existing chain across calls. |
+| `read_audit_log` | Read entries back. The chain is verified first, so tampered data is never returned as trustworthy. Use `limit` for the most recent N. |
+
+A failed operation (a tampered log, an unreadable file) comes back as a tool result with `isError` set, with the detail in the text. A malformed call (unknown tool, missing required argument) comes back as a JSON-RPC error. Diagnostics go to stderr; stdout carries nothing but protocol messages.
+
+### Setup
+
+Install the binary from source (or grab it from a release):
+
+```bash
+go install github.com/AyoubTadlaoui/GoLogX/cmd/logx-mcp@latest
+```
+
+**Claude Code** (`claude mcp add`, or in `~/.claude.json` / a project `.mcp.json`):
+
+```json
+{
+  "mcpServers": {
+    "gologx": {
+      "command": "logx-mcp"
+    }
+  }
+}
+```
+
+**Cursor** (`~/.cursor/mcp.json` or `.cursor/mcp.json` in the project):
+
+```json
+{
+  "mcpServers": {
+    "gologx": {
+      "command": "logx-mcp"
+    }
+  }
+}
+```
+
+**Codex** (`~/.codex/config.toml`):
+
+```toml
+[mcp_servers.gologx]
+command = "logx-mcp"
+```
+
+Use an absolute path to the binary if it is not on the client's `PATH`. Once it is connected, the agent can call the three tools above. Sign the log by passing `privkey_path` to `append_audit_entry` (and the matching `pubkey_path` to `verify_audit_log`); make the keypair with `logx keygen`.
+
+---
+
 ## API surface
 
 | Symbol | What it is |
