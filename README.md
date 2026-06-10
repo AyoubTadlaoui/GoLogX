@@ -12,6 +12,10 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Glama MCP server](https://glama.ai/mcp/servers/AyoubTadlaoui/GoLogX/badge)](https://glama.ai/mcp/servers/AyoubTadlaoui/GoLogX)
 
+![logx verify catching a forged audit entry, atlas-ragnarok theme](docs/screenshots/verify.webp)
+
+<sub>An agent's actions recorded into a signed, hash-chained log, then a single forged byte caught at the exact entry. Also available as [GIF](docs/screenshots/verify.gif) or [MP4](docs/screenshots/verify.mp4). Theme: [atlas-ragnarok](https://github.com/AyoubTadlaoui/atlas-ragnarok).</sub>
+
 ---
 
 ## Why
