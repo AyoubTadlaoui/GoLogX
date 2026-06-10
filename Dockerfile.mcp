@@ -1,0 +1,23 @@
+# Dockerfile.mcp — self-contained build of the logx-mcp stdio MCP server.
+#
+# Unlike ./Dockerfile (which packages the goreleaser-prebuilt logx CLI), this
+# builds logx-mcp from source in a single pass, so a registry like Glama can
+# build and run the MCP server straight from the repository with no prebuilt
+# artifacts in the context. logx-mcp has zero third-party dependencies, so the
+# build needs only the source tree.
+#
+#   docker build -f Dockerfile.mcp -t logx-mcp .
+#   docker run --rm -i logx-mcp   # speaks MCP (JSON-RPC 2.0) over stdio
+
+FROM golang:1.22-alpine AS build
+WORKDIR /src
+COPY . .
+RUN CGO_ENABLED=0 go build -trimpath -o /out/logx-mcp ./cmd/logx-mcp
+
+FROM gcr.io/distroless/static-debian12:nonroot
+LABEL org.opencontainers.image.title="logx-mcp"
+LABEL org.opencontainers.image.description="Tamper-evident audit log MCP server for AI agents"
+LABEL org.opencontainers.image.source="https://github.com/AyoubTadlaoui/GoLogX"
+LABEL org.opencontainers.image.licenses="MIT"
+COPY --from=build /out/logx-mcp /usr/local/bin/logx-mcp
+ENTRYPOINT ["/usr/local/bin/logx-mcp"]
