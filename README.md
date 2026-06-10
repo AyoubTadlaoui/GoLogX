@@ -10,6 +10,7 @@
 [![Go Reference](https://pkg.go.dev/badge/github.com/AyoubTadlaoui/GoLogX/logx.svg)](https://pkg.go.dev/github.com/AyoubTadlaoui/GoLogX/logx)
 [![Go Report Card](https://goreportcard.com/badge/github.com/AyoubTadlaoui/GoLogX)](https://goreportcard.com/report/github.com/AyoubTadlaoui/GoLogX)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Glama MCP server](https://glama.ai/mcp/servers/AyoubTadlaoui/GoLogX/badge)](https://glama.ai/mcp/servers/AyoubTadlaoui/GoLogX)
 
 ---
 
